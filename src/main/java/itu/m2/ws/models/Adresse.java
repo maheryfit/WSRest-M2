@@ -3,9 +3,6 @@ package itu.m2.ws.models;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-
 @Table(name = "adresses")
 @Data @Entity @Builder @NoArgsConstructor @AllArgsConstructor
 public class Adresse {
