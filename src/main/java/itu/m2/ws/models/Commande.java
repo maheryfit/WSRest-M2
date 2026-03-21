@@ -3,7 +3,6 @@ package itu.m2.ws.models;
 import itu.m2.ws.enums.ModePaiement;
 import jakarta.persistence.*;
 import lombok.*;
-import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
