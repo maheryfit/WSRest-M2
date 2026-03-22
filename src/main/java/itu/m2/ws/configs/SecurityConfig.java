@@ -1,4 +1,4 @@
-package itu.m2.ws.config;
+package itu.m2.ws.configs;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
