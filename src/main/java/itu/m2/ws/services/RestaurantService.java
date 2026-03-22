@@ -1,9 +1,12 @@
 package itu.m2.ws.services;
 
 import itu.m2.ws.models.Restaurant;
+import itu.m2.ws.models.Utilisateur;
 import itu.m2.ws.repositories.RestaurantRepository;
+import itu.m2.ws.repositories.UtilisateurRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,6 +17,9 @@ public class RestaurantService {
     @Autowired
     private RestaurantRepository restaurantRepository;
 
+    @Autowired
+    private UtilisateurRepository utilisateurRepository;
+
     public List<Restaurant> getAllRestaurants() {
         return restaurantRepository.findAll();
     }
@@ -22,12 +28,17 @@ public class RestaurantService {
         return restaurantRepository.findById(id);
     }
 
+    @Transactional
     public Restaurant createRestaurant(Restaurant restaurant) {
+        Utilisateur savedUtilisateur = utilisateurRepository.save(restaurant.getUtilisateur());
+        restaurant.setUtilisateur(savedUtilisateur);
         return restaurantRepository.save(restaurant);
     }
 
+    @Transactional
     public Optional<Restaurant> updateRestaurant(Long id, Restaurant restaurantDetails) {
         return restaurantRepository.findById(id).map(restaurant -> {
+            utilisateurRepository.save(restaurantDetails.getUtilisateur());
             restaurant.setUtilisateur(restaurantDetails.getUtilisateur());
             restaurant.setNom(restaurantDetails.getNom());
             restaurant.setDescription(restaurantDetails.getDescription());
@@ -45,6 +56,7 @@ public class RestaurantService {
     public boolean deleteRestaurant(Long id) {
         return restaurantRepository.findById(id).map(restaurant -> {
             restaurantRepository.delete(restaurant);
+            utilisateurRepository.delete(restaurant.getUtilisateur());
             return true;
         }).orElse(false);
     }

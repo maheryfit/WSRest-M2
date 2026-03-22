@@ -1,9 +1,11 @@
 package itu.m2.ws.controllers;
 
+import itu.m2.ws.dto.LoginRequestDto;
 import itu.m2.ws.dto.UtilisateurDto;
 import itu.m2.ws.models.Utilisateur;
 import itu.m2.ws.services.UtilisateurService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,6 +40,17 @@ public class UtilisateurController {
         utilisateur.setRole(utilisateurDto.getRole());
         utilisateur.setActif(utilisateurDto.isActif());
         return utilisateur;
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@Valid @RequestBody LoginRequestDto loginRequest) {
+        try {
+            Utilisateur utilisateur = utilisateurService.logIn(loginRequest.getEmail(), loginRequest.getMotDePasse());
+            String token = utilisateurService.generateToken(utilisateur.getEmail());
+            return ResponseEntity.ok(token);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
+        }
     }
 
     @GetMapping

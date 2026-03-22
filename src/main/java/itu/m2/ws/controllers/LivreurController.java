@@ -3,7 +3,9 @@ package itu.m2.ws.controllers;
 import itu.m2.ws.dto.LivreurDto;
 import itu.m2.ws.models.Livreur;
 import itu.m2.ws.models.Utilisateur;
+import itu.m2.ws.enums.Role;
 import itu.m2.ws.services.LivreurService;
+import itu.m2.ws.services.UtilisateurService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,27 +22,23 @@ public class LivreurController {
     private LivreurService livreurService;
 
     private LivreurDto convertToDto(Livreur livreur) {
-        return new LivreurDto(
-                livreur.getId(),
-                livreur.getUtilisateur().getId(),
-                livreur.getNom(),
-                livreur.getPrenom(),
-                livreur.getTelephone(),
-                livreur.getStatut()
-        );
+        LivreurDto dto = new LivreurDto();
+        dto.setId(livreur.getId());
+        dto.setNom(livreur.getNom());
+        dto.setPrenom(livreur.getPrenom());
+        dto.setTelephone(livreur.getTelephone());
+        dto.setStatut(livreur.getStatut());
+        dto.setEmail(livreur.getUtilisateur().getEmail());
+        return dto;
     }
 
-    private Livreur convertToEntity(LivreurDto livreurDto) {
+    private Livreur convertToEntity(LivreurDto livreurDto, Utilisateur utilisateur) {
         Livreur livreur = new Livreur();
         livreur.setNom(livreurDto.getNom());
         livreur.setPrenom(livreurDto.getPrenom());
         livreur.setTelephone(livreurDto.getTelephone());
         livreur.setStatut(livreurDto.getStatut());
-
-        Utilisateur utilisateur = new Utilisateur();
-        utilisateur.setId(livreurDto.getUtilisateurId());
         livreur.setUtilisateur(utilisateur);
-
         return livreur;
     }
 
@@ -58,16 +56,30 @@ public class LivreurController {
 
     @PostMapping
     public LivreurDto createLivreur(@Valid @RequestBody LivreurDto livreurDto) {
-        Livreur livreur = convertToEntity(livreurDto);
+        Utilisateur newUser = new Utilisateur();
+        newUser.setEmail(livreurDto.getEmail());
+        newUser.setMotDePasseHash(livreurDto.getMotDePasse()); // Remember to hash in a real app
+        newUser.setRole(Role.LIVREUR);
+        
+        Livreur livreur = convertToEntity(livreurDto, newUser);
         return convertToDto(livreurService.createLivreur(livreur));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<LivreurDto> updateLivreur(@PathVariable Long id, @Valid @RequestBody LivreurDto livreurDto) {
-        Livreur livreur = convertToEntity(livreurDto);
-        return livreurService.updateLivreur(id, livreur)
-                .map(updatedLivreur -> ResponseEntity.ok(convertToDto(updatedLivreur)))
-                .orElse(ResponseEntity.notFound().build());
+        return livreurService.getLivreurById(id)
+            .map(existingLivreur -> {
+                Utilisateur utilisateurToUpdate = existingLivreur.getUtilisateur();
+                utilisateurToUpdate.setEmail(livreurDto.getEmail());
+                
+                Livreur livreurToUpdate = convertToEntity(livreurDto, utilisateurToUpdate);
+                livreurToUpdate.setId(id);
+
+                return livreurService.updateLivreur(id, livreurToUpdate)
+                        .map(updatedLivreur -> ResponseEntity.ok(convertToDto(updatedLivreur)))
+                        .orElse(ResponseEntity.notFound().build());
+            })
+            .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
