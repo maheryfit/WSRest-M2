@@ -3,7 +3,9 @@ package itu.m2.ws.controllers;
 import itu.m2.ws.dto.ClientDto;
 import itu.m2.ws.models.Client;
 import itu.m2.ws.models.Utilisateur;
+import itu.m2.ws.enums.Role;
 import itu.m2.ws.services.ClientService;
+import itu.m2.ws.services.UtilisateurService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,25 +22,21 @@ public class ClientController {
     private ClientService clientService;
 
     private ClientDto convertToDto(Client client) {
-        return new ClientDto(
-                client.getId(),
-                client.getUtilisateur().getId(),
-                client.getNom(),
-                client.getPrenom(),
-                client.getTelephone()
-        );
+        ClientDto dto = new ClientDto();
+        dto.setId(client.getId());
+        dto.setNom(client.getNom());
+        dto.setPrenom(client.getPrenom());
+        dto.setTelephone(client.getTelephone());
+        dto.setEmail(client.getUtilisateur().getEmail());
+        return dto;
     }
 
-    private Client convertToEntity(ClientDto clientDto) {
+    private Client convertToEntity(ClientDto clientDto, Utilisateur utilisateur) {
         Client client = new Client();
         client.setNom(clientDto.getNom());
         client.setPrenom(clientDto.getPrenom());
         client.setTelephone(clientDto.getTelephone());
-
-        Utilisateur utilisateur = new Utilisateur();
-        utilisateur.setId(clientDto.getUtilisateurId());
         client.setUtilisateur(utilisateur);
-
         return client;
     }
 
@@ -56,16 +54,31 @@ public class ClientController {
 
     @PostMapping
     public ClientDto createClient(@Valid @RequestBody ClientDto clientDto) {
-        Client client = convertToEntity(clientDto);
+        Utilisateur newUser = new Utilisateur();
+        newUser.setEmail(clientDto.getEmail());
+        newUser.setMotDePasseHash(clientDto.getMotDePasse()); // Remember to hash in a real app
+        newUser.setRole(Role.CLIENT);
+        
+        Client client = convertToEntity(clientDto, newUser);
         return convertToDto(clientService.createClient(client));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<ClientDto> updateClient(@PathVariable Long id, @Valid @RequestBody ClientDto clientDto) {
-        Client client = convertToEntity(clientDto);
-        return clientService.updateClient(id, client)
-                .map(updatedClient -> ResponseEntity.ok(convertToDto(updatedClient)))
-                .orElse(ResponseEntity.notFound().build());
+        return clientService.getClientById(id)
+            .map(existingClient -> {
+                Utilisateur utilisateurToUpdate = existingClient.getUtilisateur();
+                utilisateurToUpdate.setEmail(clientDto.getEmail());
+                // Password update logic should be handled carefully, maybe in a separate endpoint
+                
+                Client clientToUpdate = convertToEntity(clientDto, utilisateurToUpdate);
+                clientToUpdate.setId(id);
+
+                return clientService.updateClient(id, clientToUpdate)
+                        .map(updatedClient -> ResponseEntity.ok(convertToDto(updatedClient)))
+                        .orElse(ResponseEntity.notFound().build());
+            })
+            .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")

@@ -3,7 +3,9 @@ package itu.m2.ws.controllers;
 import itu.m2.ws.dto.RestaurantDto;
 import itu.m2.ws.models.Restaurant;
 import itu.m2.ws.models.Utilisateur;
+import itu.m2.ws.enums.Role;
 import itu.m2.ws.services.RestaurantService;
+import itu.m2.ws.services.UtilisateurService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,22 +22,22 @@ public class RestaurantController {
     private RestaurantService restaurantService;
 
     private RestaurantDto convertToDto(Restaurant restaurant) {
-        return new RestaurantDto(
-                restaurant.getId(),
-                restaurant.getUtilisateur().getId(),
-                restaurant.getNom(),
-                restaurant.getDescription(),
-                restaurant.getTelephone(),
-                restaurant.getAdresse(),
-                restaurant.getVille(),
-                restaurant.getLatitude(),
-                restaurant.getLongitude(),
-                restaurant.isOuvert(),
-                restaurant.getNoteMoyenne()
-        );
+        RestaurantDto dto = new RestaurantDto();
+        dto.setId(restaurant.getId());
+        dto.setNom(restaurant.getNom());
+        dto.setDescription(restaurant.getDescription());
+        dto.setTelephone(restaurant.getTelephone());
+        dto.setAdresse(restaurant.getAdresse());
+        dto.setVille(restaurant.getVille());
+        dto.setLatitude(restaurant.getLatitude());
+        dto.setLongitude(restaurant.getLongitude());
+        dto.setOuvert(restaurant.isOuvert());
+        dto.setNoteMoyenne(restaurant.getNoteMoyenne());
+        dto.setEmail(restaurant.getUtilisateur().getEmail());
+        return dto;
     }
 
-    private Restaurant convertToEntity(RestaurantDto restaurantDto) {
+    private Restaurant convertToEntity(RestaurantDto restaurantDto, Utilisateur utilisateur) {
         Restaurant restaurant = new Restaurant();
         restaurant.setNom(restaurantDto.getNom());
         restaurant.setDescription(restaurantDto.getDescription());
@@ -46,11 +48,7 @@ public class RestaurantController {
         restaurant.setLongitude(restaurantDto.getLongitude());
         restaurant.setOuvert(restaurantDto.isOuvert());
         restaurant.setNoteMoyenne(restaurantDto.getNoteMoyenne());
-
-        Utilisateur utilisateur = new Utilisateur();
-        utilisateur.setId(restaurantDto.getUtilisateurId());
         restaurant.setUtilisateur(utilisateur);
-
         return restaurant;
     }
 
@@ -68,16 +66,30 @@ public class RestaurantController {
 
     @PostMapping
     public RestaurantDto createRestaurant(@Valid @RequestBody RestaurantDto restaurantDto) {
-        Restaurant restaurant = convertToEntity(restaurantDto);
+        Utilisateur newUser = new Utilisateur();
+        newUser.setEmail(restaurantDto.getEmail());
+        newUser.setMotDePasseHash(restaurantDto.getMotDePasse()); // Remember to hash in a real app
+        newUser.setRole(Role.RESTAURANT);
+        
+        Restaurant restaurant = convertToEntity(restaurantDto, newUser);
         return convertToDto(restaurantService.createRestaurant(restaurant));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<RestaurantDto> updateRestaurant(@PathVariable Long id, @Valid @RequestBody RestaurantDto restaurantDto) {
-        Restaurant restaurant = convertToEntity(restaurantDto);
-        return restaurantService.updateRestaurant(id, restaurant)
-                .map(updatedRestaurant -> ResponseEntity.ok(convertToDto(updatedRestaurant)))
-                .orElse(ResponseEntity.notFound().build());
+        return restaurantService.getRestaurantById(id)
+            .map(existingRestaurant -> {
+                Utilisateur utilisateurToUpdate = existingRestaurant.getUtilisateur();
+                utilisateurToUpdate.setEmail(restaurantDto.getEmail());
+                
+                Restaurant restaurantToUpdate = convertToEntity(restaurantDto, utilisateurToUpdate);
+                restaurantToUpdate.setId(id);
+
+                return restaurantService.updateRestaurant(id, restaurantToUpdate)
+                        .map(updatedRestaurant -> ResponseEntity.ok(convertToDto(updatedRestaurant)))
+                        .orElse(ResponseEntity.notFound().build());
+            })
+            .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")

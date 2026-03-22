@@ -3,18 +3,15 @@ package itu.m2.ws.dto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
-import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
-public class RestaurantDto {
+@EqualsAndHashCode(callSuper = true)
+public class RestaurantDto extends UtilisateurCreationDto {
     private Long id;
-
-    @NotNull(message = "L'identifiant de l'utilisateur ne peut pas être nul")
-    private Long utilisateurId;
 
     @NotBlank(message = "Le nom ne peut pas être vide")
     private String nom;
