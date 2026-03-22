@@ -7,6 +7,7 @@ import itu.m2.ws.services.UtilisateurService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
@@ -35,7 +36,6 @@ public class UtilisateurController {
     private Utilisateur convertToEntity(UtilisateurDto utilisateurDto) {
         Utilisateur utilisateur = new Utilisateur();
         utilisateur.setEmail(utilisateurDto.getEmail());
-        // In a real app, you'd hash the password here before saving
         utilisateur.setMotDePasseHash(utilisateurDto.getMotDePasse());
         utilisateur.setRole(utilisateurDto.getRole());
         utilisateur.setActif(utilisateurDto.isActif());
@@ -51,6 +51,12 @@ public class UtilisateurController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
         }
+    }
+
+    @GetMapping("/logout")
+    public ResponseEntity<String> logOut() {
+        SecurityContextHolder.getContext().setAuthentication(null);
+        return ResponseEntity.status(HttpStatus.OK).body("Logout successfully");
     }
 
     @GetMapping
