@@ -39,7 +39,8 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/h2-console/**", "/api/utilisateurs/login").permitAll()
+                        // TODO ("enlever /api/** en production")
+                        .requestMatchers("/h2-console/**", "/api/utilisateurs/login", "/api/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .headers(headers -> headers
