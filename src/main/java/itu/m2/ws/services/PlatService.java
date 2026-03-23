@@ -17,9 +17,17 @@ public class PlatService {
     public List<Plat> getAllPlats() {
         return platRepository.findAll();
     }
+    
+    public List<Plat> getPlatsByRestaurantId(Long restaurantId) {
+        return platRepository.findByRestaurantId(restaurantId);
+    }
 
     public Optional<Plat> getPlatById(Long id) {
         return platRepository.findById(id);
+    }
+    
+    public Optional<Plat> getPlatByIdAndRestaurantId(Long id, Long restaurantId) {
+        return platRepository.findByIdAndRestaurantId(id, restaurantId);
     }
 
     public Plat createPlat(Plat plat) {

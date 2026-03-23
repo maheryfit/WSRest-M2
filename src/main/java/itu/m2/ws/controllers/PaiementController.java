@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/paiements")
+@RequestMapping("/api")
 public class PaiementController {
 
     @Autowired
@@ -46,25 +46,50 @@ public class PaiementController {
         return paiement;
     }
 
-    @GetMapping
+    @GetMapping("/paiements")
     public List<PaiementDto> getAllPaiements() {
         return paiementService.getAllPaiements().stream().map(this::convertToDto).collect(Collectors.toList());
     }
+    
+    @GetMapping("/commandes/{commandeId}/paiement")
+    public ResponseEntity<PaiementDto> getPaiementByCommandeId(@PathVariable Long commandeId) {
+        // Needs findByCommandeId in PaiementRepository/Service
+        // Return mock for now
+        return ResponseEntity.notFound().build();
+    }
+    
+    @PostMapping("/commandes/{commandeId}/paiement")
+    public ResponseEntity<PaiementDto> initierPaiement(@PathVariable Long commandeId, @RequestBody PaiementDto paiementDto) {
+        // Initier un paiement
+        return ResponseEntity.ok().build();
+    }
+    
+    @PostMapping("/paiements/{id}/confirmer")
+    public ResponseEntity<PaiementDto> confirmerPaiement(@PathVariable Long id) {
+        // Update statut to SUCCES
+        return ResponseEntity.ok().build();
+    }
+    
+    @PostMapping("/paiements/{id}/echouer")
+    public ResponseEntity<PaiementDto> echouerPaiement(@PathVariable Long id) {
+        // Update statut to ECHEC
+        return ResponseEntity.ok().build();
+    }
 
-    @GetMapping("/{id}")
+    @GetMapping("/paiements/{id}")
     public ResponseEntity<PaiementDto> getPaiementById(@PathVariable Long id) {
         return paiementService.getPaiementById(id)
                 .map(paiement -> ResponseEntity.ok(convertToDto(paiement)))
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PostMapping
+    @PostMapping("/paiements")
     public PaiementDto createPaiement(@Valid @RequestBody PaiementDto paiementDto) {
         Paiement paiement = convertToEntity(paiementDto);
         return convertToDto(paiementService.createPaiement(paiement));
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/paiements/{id}")
     public ResponseEntity<PaiementDto> updatePaiement(@PathVariable Long id, @Valid @RequestBody PaiementDto paiementDto) {
         Paiement paiement = convertToEntity(paiementDto);
         return paiementService.updatePaiement(id, paiement)
@@ -72,7 +97,7 @@ public class PaiementController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/paiements/{id}")
     public ResponseEntity<Void> deletePaiement(@PathVariable Long id) {
         return paiementService.deletePaiement(id) ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
     }

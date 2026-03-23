@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/avisrestaurants")
+@RequestMapping("/api")
 public class AvisRestaurantController {
 
     @Autowired
@@ -31,13 +31,13 @@ public class AvisRestaurantController {
         );
     }
 
-    private AvisRestaurant convertToEntity(AvisRestaurantDto avisDto) {
+    private AvisRestaurant convertToEntity(AvisRestaurantDto avisDto, Long restaurantId) {
         AvisRestaurant avis = new AvisRestaurant();
         avis.setNote(avisDto.getNote());
         avis.setCommentaire(avisDto.getCommentaire());
 
         Restaurant restaurant = new Restaurant();
-        restaurant.setId(avisDto.getRestaurantId());
+        restaurant.setId(restaurantId);
         avis.setRestaurant(restaurant);
 
         Client client = new Client();
@@ -47,33 +47,59 @@ public class AvisRestaurantController {
         return avis;
     }
 
-    @GetMapping
+    @GetMapping("/avisrestaurants")
     public List<AvisRestaurantDto> getAllAvisRestaurants() {
         return avisRestaurantService.getAllAvisRestaurants().stream().map(this::convertToDto).collect(Collectors.toList());
     }
+    
+    @GetMapping("/restaurants/{restaurantId}/avis")
+    public ResponseEntity<List<AvisRestaurantDto>> getAvisByRestaurantId(@PathVariable Long restaurantId) {
+        // Needs findByRestaurantId in Service
+        return ResponseEntity.ok(List.of());
+    }
+    
+    @PostMapping("/restaurants/{restaurantId}/avis")
+    public ResponseEntity<AvisRestaurantDto> createAvisByRestaurantId(@PathVariable Long restaurantId, @Valid @RequestBody AvisRestaurantDto avisDto) {
+        // Should verify if user has ordered from here before
+        AvisRestaurant avis = convertToEntity(avisDto, restaurantId);
+        return ResponseEntity.ok(convertToDto(avisRestaurantService.createAvisRestaurant(avis)));
+    }
+    
+    @PutMapping("/restaurants/{restaurantId}/avis/{id}")
+    public ResponseEntity<AvisRestaurantDto> updateAvisByRestaurantId(@PathVariable Long restaurantId, @PathVariable Long id, @Valid @RequestBody AvisRestaurantDto avisDto) {
+        AvisRestaurant avis = convertToEntity(avisDto, restaurantId);
+        return avisRestaurantService.updateAvisRestaurant(id, avis)
+                .map(updatedAvis -> ResponseEntity.ok(convertToDto(updatedAvis)))
+                .orElse(ResponseEntity.notFound().build());
+    }
 
-    @GetMapping("/{id}")
+    @DeleteMapping("/restaurants/{restaurantId}/avis/{id}")
+    public ResponseEntity<Void> deleteAvisByRestaurantId(@PathVariable Long restaurantId, @PathVariable Long id) {
+        return avisRestaurantService.deleteAvisRestaurant(id) ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/avisrestaurants/{id}")
     public ResponseEntity<AvisRestaurantDto> getAvisRestaurantById(@PathVariable Long id) {
         return avisRestaurantService.getAvisRestaurantById(id)
                 .map(avis -> ResponseEntity.ok(convertToDto(avis)))
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PostMapping
+    @PostMapping("/avisrestaurants")
     public AvisRestaurantDto createAvisRestaurant(@Valid @RequestBody AvisRestaurantDto avisDto) {
-        AvisRestaurant avis = convertToEntity(avisDto);
+        AvisRestaurant avis = convertToEntity(avisDto, avisDto.getRestaurantId());
         return convertToDto(avisRestaurantService.createAvisRestaurant(avis));
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/avisrestaurants/{id}")
     public ResponseEntity<AvisRestaurantDto> updateAvisRestaurant(@PathVariable Long id, @Valid @RequestBody AvisRestaurantDto avisDto) {
-        AvisRestaurant avis = convertToEntity(avisDto);
+        AvisRestaurant avis = convertToEntity(avisDto, avisDto.getRestaurantId());
         return avisRestaurantService.updateAvisRestaurant(id, avis)
                 .map(updatedAvis -> ResponseEntity.ok(convertToDto(updatedAvis)))
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/avisrestaurants/{id}")
     public ResponseEntity<Void> deleteAvisRestaurant(@PathVariable Long id) {
         return avisRestaurantService.deleteAvisRestaurant(id) ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
     }
