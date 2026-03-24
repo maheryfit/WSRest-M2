@@ -7,15 +7,17 @@ import itu.m2.ws.models.Livreur;
 import itu.m2.ws.models.Utilisateur;
 import itu.m2.ws.enums.Role;
 import itu.m2.ws.enums.StatutLivreur;
+import itu.m2.ws.services.CommandeService;
 import itu.m2.ws.services.LivreurService;
 import itu.m2.ws.services.UtilisateurService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.http.MediaType;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -25,8 +27,8 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@Import(SecurityConfig.class)
 @WebMvcTest(LivreurController.class)
+@Import(SecurityConfig.class)
 public class LivreurControllerTest {
 
     @Autowired
@@ -37,6 +39,9 @@ public class LivreurControllerTest {
 
     @MockitoBean
     private UtilisateurService utilisateurService;
+
+    @MockitoBean
+    private CommandeService commandeService;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -67,6 +72,39 @@ public class LivreurControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.nom").value("Martin"));
+    }
+
+    @Test
+    @WithMockUser(username = "livreur@test.com", roles = "LIVREUR")
+    public void testGetMyCommandes() throws Exception {
+        // Mocked for now in controller
+        mockMvc.perform(get("/api/livreurs/me/commandes"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    }
+
+    @Test
+    @WithMockUser(roles = "LIVREUR")
+    public void testAccepterLivraison() throws Exception {
+        // Mocked for now in controller
+        mockMvc.perform(post("/api/livreurs/me/commandes/1/accepter"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithMockUser(roles = "LIVREUR")
+    public void testEnLivraisonCommande() throws Exception {
+        // Mocked for now in controller
+        mockMvc.perform(post("/api/livreurs/me/commandes/1/en-livraison"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithMockUser(roles = "LIVREUR")
+    public void testLivreeCommande() throws Exception {
+        // Mocked for now in controller
+        mockMvc.perform(post("/api/livreurs/me/commandes/1/livree"))
+                .andExpect(status().isOk());
     }
 
     @Test
@@ -109,6 +147,16 @@ public class LivreurControllerTest {
                         .content(objectMapper.writeValueAsString(livreurDto)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.statut").value("HORS_LIGNE"));
+    }
+    
+    @Test
+    @WithMockUser(username = "livreur@test.com", roles = "LIVREUR")
+    public void testUpdateMyStatus() throws Exception {
+        // Mocked for now in controller
+        mockMvc.perform(patch("/api/livreurs/me/statut")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("\"DISPONIBLE\""))
+                .andExpect(status().isOk());
     }
 
     @Test
