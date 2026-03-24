@@ -2,6 +2,7 @@ package itu.m2.ws.services;
 
 import itu.m2.ws.models.Commande;
 import itu.m2.ws.models.HistoriqueCommande;
+import itu.m2.ws.models.StatutCommande;
 import itu.m2.ws.repositories.CommandeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,14 @@ public class CommandeService {
 
     public List<Commande> getAllCommandes() {
         return commandeRepository.findAll();
+    }
+    
+    public List<Commande> getCommandesByClientId(Long clientId) {
+        return commandeRepository.findByClientId(clientId);
+    }
+    
+    public List<Commande> getCommandesByRestaurantId(Long restaurantId) {
+        return commandeRepository.findByRestaurantId(restaurantId);
     }
 
     public Optional<Commande> getCommandeById(Long id) {
@@ -53,6 +62,20 @@ public class CommandeService {
             commande.setModePaiement(commandeDetails.getModePaiement());
             return commandeRepository.save(commande);
         });
+    }
+    
+    @Transactional
+    public Optional<Commande> updateStatutCommande(Long id, StatutCommande statutCommande) {
+         return commandeRepository.findById(id).map(commande -> {
+             if (!commande.getStatutCommande().getId().equals(statutCommande.getId())) {
+                HistoriqueCommande historique = new HistoriqueCommande();
+                historique.setCommande(commande);
+                historique.setStatutCommande(statutCommande);
+                historiqueCommandeService.createHistoriqueCommande(historique);
+             }
+             commande.setStatutCommande(statutCommande);
+             return commandeRepository.save(commande);
+         });
     }
 
     public boolean deleteCommande(Long id) {

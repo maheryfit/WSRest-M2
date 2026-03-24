@@ -64,6 +64,13 @@ public class UtilisateurControllerTest {
                 .andExpect(status().isUnauthorized())
                 .andExpect(content().string("Invalid email or password"));
     }
+    
+    @Test
+    public void testLogOut() throws Exception {
+        mockMvc.perform(get("/api/utilisateurs/logout"))
+                .andExpect(status().isOk())
+                .andExpect(content().string("Logout successfully"));
+    }
 
     @Test
     public void testGetAllUtilisateurs() throws Exception {
