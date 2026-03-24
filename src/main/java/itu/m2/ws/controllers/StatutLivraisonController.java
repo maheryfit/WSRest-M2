@@ -18,40 +18,29 @@ public class StatutLivraisonController {
     @Autowired
     private StatutLivraisonService statutLivraisonService;
 
-    private StatutLivraisonDto convertToDto(StatutLivraison statut) {
-        return new StatutLivraisonDto(statut.getId(), statut.getLibelle(), statut.getRang());
-    }
-
-    private StatutLivraison convertToEntity(StatutLivraisonDto statutDto) {
-        StatutLivraison statut = new StatutLivraison();
-        statut.setLibelle(statutDto.getLibelle());
-        statut.setRang(statutDto.getRang());
-        return statut;
-    }
-
     @GetMapping
     public List<StatutLivraisonDto> getAllStatutLivraisons() {
-        return statutLivraisonService.getAllStatutLivraisons().stream().map(this::convertToDto).collect(Collectors.toList());
+        return statutLivraisonService.getAllStatutLivraisons().stream().map(StatutLivraisonDto::convertToDto).collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<StatutLivraisonDto> getStatutLivraisonById(@PathVariable Long id) {
         return statutLivraisonService.getStatutLivraisonById(id)
-                .map(statut -> ResponseEntity.ok(convertToDto(statut)))
+                .map(statut -> ResponseEntity.ok(StatutLivraisonDto.convertToDto(statut)))
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
     public StatutLivraisonDto createStatutLivraison(@Valid @RequestBody StatutLivraisonDto statutDto) {
-        StatutLivraison statut = convertToEntity(statutDto);
-        return convertToDto(statutLivraisonService.createStatutLivraison(statut));
+        StatutLivraison statut = StatutLivraisonDto.convertToEntity(statutDto);
+        return StatutLivraisonDto.convertToDto(statutLivraisonService.createStatutLivraison(statut));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<StatutLivraisonDto> updateStatutLivraison(@PathVariable Long id, @Valid @RequestBody StatutLivraisonDto statutDto) {
-        StatutLivraison statut = convertToEntity(statutDto);
+        StatutLivraison statut = StatutLivraisonDto.convertToEntity(statutDto);
         return statutLivraisonService.updateStatutLivraison(id, statut)
-                .map(updatedStatut -> ResponseEntity.ok(convertToDto(updatedStatut)))
+                .map(updatedStatut -> ResponseEntity.ok(StatutLivraisonDto.convertToDto(updatedStatut)))
                 .orElse(ResponseEntity.notFound().build());
     }
 

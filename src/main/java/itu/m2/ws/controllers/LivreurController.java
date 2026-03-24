@@ -2,19 +2,13 @@ package itu.m2.ws.controllers;
 
 import itu.m2.ws.dto.CommandeDto;
 import itu.m2.ws.dto.LivreurDto;
-import itu.m2.ws.models.Commande;
 import itu.m2.ws.models.Livreur;
 import itu.m2.ws.models.Utilisateur;
-import itu.m2.ws.models.StatutCommande;
 import itu.m2.ws.enums.Role;
-import itu.m2.ws.enums.StatutLivreur;
 import itu.m2.ws.services.CommandeService;
 import itu.m2.ws.services.LivreurService;
-import itu.m2.ws.services.UtilisateurService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
@@ -23,7 +17,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/livreurs")
-public class LivreurController {
+public class LivreurController extends BaseController {
 
     @Autowired
     private LivreurService livreurService;
@@ -31,58 +25,15 @@ public class LivreurController {
     @Autowired
     private CommandeService commandeService;
 
-    private LivreurDto convertToDto(Livreur livreur) {
-        LivreurDto dto = new LivreurDto();
-        dto.setId(livreur.getId());
-        dto.setNom(livreur.getNom());
-        dto.setPrenom(livreur.getPrenom());
-        dto.setTelephone(livreur.getTelephone());
-        dto.setStatut(livreur.getStatut());
-        dto.setEmail(livreur.getUtilisateur().getEmail());
-        return dto;
-    }
-
-    private CommandeDto convertCommandeToDto(Commande commande) {
-        return new CommandeDto(
-                commande.getId(),
-                commande.getClient().getId(),
-                commande.getRestaurant().getId(),
-                commande.getStatutCommande().getId(),
-                commande.getMontantTotal(),
-                commande.getModePaiement(),
-                commande.getDateCreation()
-        );
-    }
-
-    private Livreur convertToEntity(LivreurDto livreurDto, Utilisateur utilisateur) {
-        Livreur livreur = new Livreur();
-        livreur.setNom(livreurDto.getNom());
-        livreur.setPrenom(livreurDto.getPrenom());
-        livreur.setTelephone(livreurDto.getTelephone());
-        livreur.setStatut(livreurDto.getStatut());
-        livreur.setUtilisateur(utilisateur);
-        return livreur;
-    }
-
-    private String getCurrentUserEmail() {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (principal instanceof UserDetails) {
-            return ((UserDetails) principal).getUsername();
-        } else {
-            assert principal != null;
-            return principal.toString();
-        }
-    }
-
     @GetMapping
     public List<LivreurDto> getAllLivreurs() {
-        return livreurService.getAllLivreurs().stream().map(this::convertToDto).collect(Collectors.toList());
+        return livreurService.getAllLivreurs().stream().map(LivreurDto::convertToDto).collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<LivreurDto> getLivreurById(@PathVariable Long id) {
         return livreurService.getLivreurById(id)
-                .map(livreur -> ResponseEntity.ok(convertToDto(livreur)))
+                .map(livreur -> ResponseEntity.ok(LivreurDto.convertToDto(livreur)))
                 .orElse(ResponseEntity.notFound().build());
     }
 
@@ -124,8 +75,8 @@ public class LivreurController {
         newUser.setMotDePasseHash(livreurDto.getMotDePasse()); // Remember to hash in a real app
         newUser.setRole(Role.LIVREUR);
 
-        Livreur livreur = convertToEntity(livreurDto, newUser);
-        return convertToDto(livreurService.createLivreur(livreur));
+        Livreur livreur = LivreurDto.convertToEntity(livreurDto, newUser);
+        return LivreurDto.convertToDto(livreurService.createLivreur(livreur));
     }
 
     @PutMapping("/{id}")
@@ -135,11 +86,11 @@ public class LivreurController {
                     Utilisateur utilisateurToUpdate = existingLivreur.getUtilisateur();
                     utilisateurToUpdate.setEmail(livreurDto.getEmail());
 
-                    Livreur livreurToUpdate = convertToEntity(livreurDto, utilisateurToUpdate);
+                    Livreur livreurToUpdate = LivreurDto.convertToEntity(livreurDto, utilisateurToUpdate);
                     livreurToUpdate.setId(id);
 
                     return livreurService.updateLivreur(id, livreurToUpdate)
-                            .map(updatedLivreur -> ResponseEntity.ok(convertToDto(updatedLivreur)))
+                            .map(updatedLivreur -> ResponseEntity.ok(LivreurDto.convertToDto(updatedLivreur)))
                             .orElse(ResponseEntity.notFound().build());
                 })
                 .orElse(ResponseEntity.notFound().build());

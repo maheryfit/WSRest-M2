@@ -2,7 +2,6 @@ package itu.m2.ws.controllers;
 
 import itu.m2.ws.dto.PlatDto;
 import itu.m2.ws.models.Plat;
-import itu.m2.ws.models.Restaurant;
 import itu.m2.ws.services.PlatService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -19,57 +18,30 @@ public class PlatController {
     @Autowired
     private PlatService platService;
 
-    private PlatDto convertToDto(Plat plat) {
-        return new PlatDto(
-                plat.getId(),
-                plat.getRestaurant().getId(),
-                plat.getNom(),
-                plat.getDescription(),
-                plat.getPrix(),
-                plat.getCategorie(),
-                plat.isDisponible()
-        );
-    }
-
-    private Plat convertToEntity(PlatDto platDto, Long restaurantId) {
-        Plat plat = new Plat();
-        plat.setNom(platDto.getNom());
-        plat.setDescription(platDto.getDescription());
-        plat.setPrix(platDto.getPrix());
-        plat.setCategorie(platDto.getCategorie());
-        plat.setDisponible(platDto.isDisponible());
-
-        Restaurant restaurant = new Restaurant();
-        restaurant.setId(restaurantId);
-        plat.setRestaurant(restaurant);
-
-        return plat;
-    }
-
     @GetMapping
     public List<PlatDto> getAllPlats(@PathVariable Long restaurantId) {
-        return platService.getPlatsByRestaurantId(restaurantId).stream().map(this::convertToDto).collect(Collectors.toList());
+        return platService.getPlatsByRestaurantId(restaurantId).stream().map(PlatDto::convertToDto).collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<PlatDto> getPlatById(@PathVariable Long restaurantId, @PathVariable Long id) {
         return platService.getPlatByIdAndRestaurantId(id, restaurantId)
-                .map(plat -> ResponseEntity.ok(convertToDto(plat)))
+                .map(plat -> ResponseEntity.ok(PlatDto.convertToDto(plat)))
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
     public PlatDto createPlat(@PathVariable Long restaurantId, @Valid @RequestBody PlatDto platDto) {
-        Plat plat = convertToEntity(platDto, restaurantId);
-        return convertToDto(platService.createPlat(plat));
+        Plat plat = PlatDto.convertToEntity(platDto, restaurantId);
+        return PlatDto.convertToDto(platService.createPlat(plat));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<PlatDto> updatePlat(@PathVariable Long restaurantId, @PathVariable Long id, @Valid @RequestBody PlatDto platDto) {
-        Plat plat = convertToEntity(platDto, restaurantId);
+        Plat plat = PlatDto.convertToEntity(platDto, restaurantId);
         return platService.getPlatByIdAndRestaurantId(id, restaurantId)
                 .flatMap(existingPlat -> platService.updatePlat(id, plat))
-                .map(updatedPlat -> ResponseEntity.ok(convertToDto(updatedPlat)))
+                .map(updatedPlat -> ResponseEntity.ok(PlatDto.convertToDto(updatedPlat)))
                 .orElse(ResponseEntity.notFound().build());
     }
 

@@ -18,40 +18,29 @@ public class StatutPaiementController {
     @Autowired
     private StatutPaiementService statutPaiementService;
 
-    private StatutPaiementDto convertToDto(StatutPaiement statut) {
-        return new StatutPaiementDto(statut.getId(), statut.getLibelle(), statut.getRang());
-    }
-
-    private StatutPaiement convertToEntity(StatutPaiementDto statutDto) {
-        StatutPaiement statut = new StatutPaiement();
-        statut.setLibelle(statutDto.getLibelle());
-        statut.setRang(statutDto.getRang());
-        return statut;
-    }
-
     @GetMapping
     public List<StatutPaiementDto> getAllStatutPaiements() {
-        return statutPaiementService.getAllStatutPaiements().stream().map(this::convertToDto).collect(Collectors.toList());
+        return statutPaiementService.getAllStatutPaiements().stream().map(StatutPaiementDto::convertToDto).collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<StatutPaiementDto> getStatutPaiementById(@PathVariable Long id) {
         return statutPaiementService.getStatutPaiementById(id)
-                .map(statut -> ResponseEntity.ok(convertToDto(statut)))
+                .map(statut -> ResponseEntity.ok(StatutPaiementDto.convertToDto(statut)))
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
     public StatutPaiementDto createStatutPaiement(@Valid @RequestBody StatutPaiementDto statutDto) {
-        StatutPaiement statut = convertToEntity(statutDto);
-        return convertToDto(statutPaiementService.createStatutPaiement(statut));
+        StatutPaiement statut = StatutPaiementDto.convertToEntity(statutDto);
+        return StatutPaiementDto.convertToDto(statutPaiementService.createStatutPaiement(statut));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<StatutPaiementDto> updateStatutPaiement(@PathVariable Long id, @Valid @RequestBody StatutPaiementDto statutDto) {
-        StatutPaiement statut = convertToEntity(statutDto);
+        StatutPaiement statut = StatutPaiementDto.convertToEntity(statutDto);
         return statutPaiementService.updateStatutPaiement(id, statut)
-                .map(updatedStatut -> ResponseEntity.ok(convertToDto(updatedStatut)))
+                .map(updatedStatut -> ResponseEntity.ok(StatutPaiementDto.convertToDto(updatedStatut)))
                 .orElse(ResponseEntity.notFound().build());
     }
 

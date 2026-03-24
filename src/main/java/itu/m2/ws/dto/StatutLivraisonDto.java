@@ -1,5 +1,6 @@
 package itu.m2.ws.dto;
 
+import itu.m2.ws.models.StatutLivraison;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
@@ -17,4 +18,15 @@ public class StatutLivraisonDto {
 
     @PositiveOrZero(message = "Le rang doit être un nombre positif ou nul")
     private int rang;
+
+    public static StatutLivraisonDto convertToDto(StatutLivraison statut) {
+        return new StatutLivraisonDto(statut.getId(), statut.getLibelle(), statut.getRang());
+    }
+
+    public static StatutLivraison convertToEntity(StatutLivraisonDto statutDto) {
+        StatutLivraison statut = new StatutLivraison();
+        statut.setLibelle(statutDto.getLibelle());
+        statut.setRang(statutDto.getRang());
+        return statut;
+    }
 }
