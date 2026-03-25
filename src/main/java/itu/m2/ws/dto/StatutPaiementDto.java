@@ -1,5 +1,6 @@
 package itu.m2.ws.dto;
 
+import itu.m2.ws.models.StatutPaiement;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
@@ -17,4 +18,15 @@ public class StatutPaiementDto {
 
     @PositiveOrZero(message = "Le rang doit être un nombre positif ou nul")
     private int rang;
+
+    public static StatutPaiementDto convertToDto(StatutPaiement statut) {
+        return new StatutPaiementDto(statut.getId(), statut.getLibelle(), statut.getRang());
+    }
+
+    public static StatutPaiement convertToEntity(StatutPaiementDto statutDto) {
+        StatutPaiement statut = new StatutPaiement();
+        statut.setLibelle(statutDto.getLibelle());
+        statut.setRang(statutDto.getRang());
+        return statut;
+    }
 }

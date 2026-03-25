@@ -1,5 +1,8 @@
 package itu.m2.ws.dto;
 
+import itu.m2.ws.models.AvisRestaurant;
+import itu.m2.ws.models.Client;
+import itu.m2.ws.models.Restaurant;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -28,4 +31,31 @@ public class AvisRestaurantDto {
     private String commentaire;
 
     private Timestamp dateCreation;
+
+    public static AvisRestaurantDto convertToDto(AvisRestaurant avis) {
+        return new AvisRestaurantDto(
+                avis.getId(),
+                avis.getRestaurant().getId(),
+                avis.getClient().getId(),
+                avis.getNote(),
+                avis.getCommentaire(),
+                avis.getDateCreation()
+        );
+    }
+
+    public static AvisRestaurant convertToEntity(AvisRestaurantDto avisDto, Long restaurantId) {
+        AvisRestaurant avis = new AvisRestaurant();
+        avis.setNote(avisDto.getNote());
+        avis.setCommentaire(avisDto.getCommentaire());
+
+        Restaurant restaurant = new Restaurant();
+        restaurant.setId(restaurantId);
+        avis.setRestaurant(restaurant);
+
+        Client client = new Client();
+        client.setId(avisDto.getClientId());
+        avis.setClient(client);
+
+        return avis;
+    }
 }

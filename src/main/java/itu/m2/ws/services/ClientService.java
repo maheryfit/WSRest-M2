@@ -28,6 +28,14 @@ public class ClientService {
         return clientRepository.findById(id);
     }
 
+    public Optional<Client> getClientByEmail(String email) {
+        Utilisateur user = utilisateurRepository.findUtilisateurByEmail(email);
+        if (user != null) {
+            return clientRepository.findByUtilisateurId(user.getId());
+        }
+        return Optional.empty();
+    }
+
     @Transactional
     public Client createClient(Client client) {
         Utilisateur savedUtilisateur = utilisateurRepository.save(client.getUtilisateur());

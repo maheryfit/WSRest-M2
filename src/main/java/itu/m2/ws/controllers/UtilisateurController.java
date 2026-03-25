@@ -7,6 +7,7 @@ import itu.m2.ws.services.UtilisateurService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,27 +21,6 @@ public class UtilisateurController {
 
     @Autowired
     private UtilisateurService utilisateurService;
-
-    private UtilisateurDto convertToDto(Utilisateur utilisateur) {
-        // Note: Do not expose password hash
-        return new UtilisateurDto(
-                utilisateur.getId(),
-                utilisateur.getEmail(),
-                null, // Do not send password back
-                utilisateur.getRole(),
-                utilisateur.isActif(),
-                utilisateur.getDateCreation()
-        );
-    }
-
-    private Utilisateur convertToEntity(UtilisateurDto utilisateurDto) {
-        Utilisateur utilisateur = new Utilisateur();
-        utilisateur.setEmail(utilisateurDto.getEmail());
-        utilisateur.setMotDePasseHash(utilisateurDto.getMotDePasse());
-        utilisateur.setRole(utilisateurDto.getRole());
-        utilisateur.setActif(utilisateurDto.isActif());
-        return utilisateur;
-    }
 
     @PostMapping("/login")
     public ResponseEntity<String> login(@Valid @RequestBody LoginRequestDto loginRequest) {
@@ -60,32 +40,36 @@ public class UtilisateurController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public List<UtilisateurDto> getAllUtilisateurs() {
-        return utilisateurService.getAllUtilisateurs().stream().map(this::convertToDto).collect(Collectors.toList());
+        return utilisateurService.getAllUtilisateurs().stream().map(UtilisateurDto::convertToDto).collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<UtilisateurDto> getUtilisateurById(@PathVariable Long id) {
         return utilisateurService.getUtilisateurById(id)
-                .map(utilisateur -> ResponseEntity.ok(convertToDto(utilisateur)))
+                .map(utilisateur -> ResponseEntity.ok(UtilisateurDto.convertToDto(utilisateur)))
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
     public UtilisateurDto createUtilisateur(@Valid @RequestBody UtilisateurDto utilisateurDto) {
-        Utilisateur utilisateur = convertToEntity(utilisateurDto);
-        return convertToDto(utilisateurService.createUtilisateur(utilisateur));
+        Utilisateur utilisateur = UtilisateurDto.convertToEntity(utilisateurDto);
+        return UtilisateurDto.convertToDto(utilisateurService.createUtilisateur(utilisateur));
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<UtilisateurDto> updateUtilisateur(@PathVariable Long id, @Valid @RequestBody UtilisateurDto utilisateurDto) {
-        Utilisateur utilisateur = convertToEntity(utilisateurDto);
+        Utilisateur utilisateur = UtilisateurDto.convertToEntity(utilisateurDto);
         return utilisateurService.updateUtilisateur(id, utilisateur)
-                .map(updatedUtilisateur -> ResponseEntity.ok(convertToDto(updatedUtilisateur)))
+                .map(updatedUtilisateur -> ResponseEntity.ok(UtilisateurDto.convertToDto(updatedUtilisateur)))
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Void> deleteUtilisateur(@PathVariable Long id) {
         return utilisateurService.deleteUtilisateur(id) ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
     }

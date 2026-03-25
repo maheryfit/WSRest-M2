@@ -23,6 +23,14 @@ public class LivraisonService {
         return livraisonRepository.findAll();
     }
 
+    public List<Livraison> getLivraisonsByLivreurId(Long livreurId) {
+        return livraisonRepository.findByLivreurId(livreurId);
+    }
+
+    public Optional<Livraison> getLivraisonByCommandeId(Long commandeId) {
+        return livraisonRepository.findByCommandeId(commandeId);
+    }
+
     public Optional<Livraison> getLivraisonById(Long id) {
         return livraisonRepository.findById(id);
     }

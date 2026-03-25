@@ -1,6 +1,7 @@
 package itu.m2.ws.dto;
 
 import itu.m2.ws.enums.Role;
+import itu.m2.ws.models.Utilisateur;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -29,4 +30,25 @@ public class UtilisateurDto {
     private boolean actif;
 
     private Timestamp dateCreation;
+
+    public static UtilisateurDto convertToDto(Utilisateur utilisateur) {
+        return new UtilisateurDto(
+                utilisateur.getId(),
+                utilisateur.getEmail(),
+                null, // Do not send password back
+                utilisateur.getRole(),
+                utilisateur.isActif(),
+                utilisateur.getDateCreation()
+        );
+    }
+
+    public static Utilisateur convertToEntity(UtilisateurDto utilisateurDto) {
+        Utilisateur utilisateur = new Utilisateur();
+        utilisateur.setEmail(utilisateurDto.getEmail());
+        // In a real app, you'd hash the password here before saving
+        utilisateur.setMotDePasseHash(utilisateurDto.getMotDePasse());
+        utilisateur.setRole(utilisateurDto.getRole());
+        utilisateur.setActif(utilisateurDto.isActif());
+        return utilisateur;
+    }
 }

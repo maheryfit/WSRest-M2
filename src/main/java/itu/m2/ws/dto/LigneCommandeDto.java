@@ -1,5 +1,8 @@
 package itu.m2.ws.dto;
 
+import itu.m2.ws.models.Commande;
+import itu.m2.ws.models.LigneCommande;
+import itu.m2.ws.models.Plat;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
@@ -23,4 +26,30 @@ public class LigneCommandeDto {
 
     @Positive(message = "Le prix unitaire doit être un nombre positif")
     private double prixUnitaire;
+
+    public static LigneCommandeDto convertToDto(LigneCommande ligneCommande) {
+        return new LigneCommandeDto(
+                ligneCommande.getId(),
+                ligneCommande.getCommande().getId(),
+                ligneCommande.getPlat().getId(),
+                ligneCommande.getQuantite(),
+                ligneCommande.getPrixUnitaire()
+        );
+    }
+
+    public static LigneCommande convertToEntity(LigneCommandeDto ligneCommandeDto) {
+        LigneCommande ligneCommande = new LigneCommande();
+        ligneCommande.setQuantite(ligneCommandeDto.getQuantite());
+        ligneCommande.setPrixUnitaire(ligneCommandeDto.getPrixUnitaire());
+
+        Commande commande = new Commande();
+        commande.setId(ligneCommandeDto.getCommandeId());
+        ligneCommande.setCommande(commande);
+
+        Plat plat = new Plat();
+        plat.setId(ligneCommandeDto.getPlatId());
+        ligneCommande.setPlat(plat);
+
+        return ligneCommande;
+    }
 }

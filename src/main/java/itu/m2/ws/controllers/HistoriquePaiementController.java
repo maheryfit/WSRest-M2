@@ -2,8 +2,6 @@ package itu.m2.ws.controllers;
 
 import itu.m2.ws.dto.HistoriquePaiementDto;
 import itu.m2.ws.models.HistoriquePaiement;
-import itu.m2.ws.models.Paiement;
-import itu.m2.ws.models.StatutPaiement;
 import itu.m2.ws.services.HistoriquePaiementService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -20,53 +18,29 @@ public class HistoriquePaiementController {
     @Autowired
     private HistoriquePaiementService historiquePaiementService;
 
-    private HistoriquePaiementDto convertToDto(HistoriquePaiement historique) {
-        return new HistoriquePaiementDto(
-                historique.getId(),
-                historique.getPaiement().getId(),
-                historique.getDateStatus(),
-                historique.getStatutPaiement().getId()
-        );
-    }
-
-    private HistoriquePaiement convertToEntity(HistoriquePaiementDto historiqueDto) {
-        HistoriquePaiement historique = new HistoriquePaiement();
-        historique.setDateStatus(historiqueDto.getDateStatus());
-
-        Paiement paiement = new Paiement();
-        paiement.setId(historiqueDto.getPaiementId());
-        historique.setPaiement(paiement);
-
-        StatutPaiement statut = new StatutPaiement();
-        statut.setId(historiqueDto.getStatutPaiementId());
-        historique.setStatutPaiement(statut);
-
-        return historique;
-    }
-
     @GetMapping
     public List<HistoriquePaiementDto> getAllHistoriquePaiements() {
-        return historiquePaiementService.getAllHistoriquePaiements().stream().map(this::convertToDto).collect(Collectors.toList());
+        return historiquePaiementService.getAllHistoriquePaiements().stream().map(HistoriquePaiementDto::convertToDto).collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<HistoriquePaiementDto> getHistoriquePaiementById(@PathVariable Long id) {
         return historiquePaiementService.getHistoriquePaiementById(id)
-                .map(historique -> ResponseEntity.ok(convertToDto(historique)))
+                .map(historique -> ResponseEntity.ok(HistoriquePaiementDto.convertToDto(historique)))
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
     public HistoriquePaiementDto createHistoriquePaiement(@Valid @RequestBody HistoriquePaiementDto historiqueDto) {
-        HistoriquePaiement historique = convertToEntity(historiqueDto);
-        return convertToDto(historiquePaiementService.createHistoriquePaiement(historique));
+        HistoriquePaiement historique = HistoriquePaiementDto.convertToEntity(historiqueDto);
+        return HistoriquePaiementDto.convertToDto(historiquePaiementService.createHistoriquePaiement(historique));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<HistoriquePaiementDto> updateHistoriquePaiement(@PathVariable Long id, @Valid @RequestBody HistoriquePaiementDto historiqueDto) {
-        HistoriquePaiement historique = convertToEntity(historiqueDto);
+        HistoriquePaiement historique = HistoriquePaiementDto.convertToEntity(historiqueDto);
         return historiquePaiementService.updateHistoriquePaiement(id, historique)
-                .map(updatedHistorique -> ResponseEntity.ok(convertToDto(updatedHistorique)))
+                .map(updatedHistorique -> ResponseEntity.ok(HistoriquePaiementDto.convertToDto(updatedHistorique)))
                 .orElse(ResponseEntity.notFound().build());
     }
 

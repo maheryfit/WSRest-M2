@@ -18,40 +18,29 @@ public class StatutCommandeController {
     @Autowired
     private StatutCommandeService statutCommandeService;
 
-    private StatutCommandeDto convertToDto(StatutCommande statut) {
-        return new StatutCommandeDto(statut.getId(), statut.getLibelle(), statut.getRang());
-    }
-
-    private StatutCommande convertToEntity(StatutCommandeDto statutDto) {
-        StatutCommande statut = new StatutCommande();
-        statut.setLibelle(statutDto.getLibelle());
-        statut.setRang(statutDto.getRang());
-        return statut;
-    }
-
     @GetMapping
     public List<StatutCommandeDto> getAllStatutCommandes() {
-        return statutCommandeService.getAllStatutCommandes().stream().map(this::convertToDto).collect(Collectors.toList());
+        return statutCommandeService.getAllStatutCommandes().stream().map(StatutCommandeDto::convertToDto).collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<StatutCommandeDto> getStatutCommandeById(@PathVariable Long id) {
         return statutCommandeService.getStatutCommandeById(id)
-                .map(statut -> ResponseEntity.ok(convertToDto(statut)))
+                .map(statut -> ResponseEntity.ok(StatutCommandeDto.convertToDto(statut)))
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
     public StatutCommandeDto createStatutCommande(@Valid @RequestBody StatutCommandeDto statutDto) {
-        StatutCommande statut = convertToEntity(statutDto);
-        return convertToDto(statutCommandeService.createStatutCommande(statut));
+        StatutCommande statut = StatutCommandeDto.convertToEntity(statutDto);
+        return StatutCommandeDto.convertToDto(statutCommandeService.createStatutCommande(statut));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<StatutCommandeDto> updateStatutCommande(@PathVariable Long id, @Valid @RequestBody StatutCommandeDto statutDto) {
-        StatutCommande statut = convertToEntity(statutDto);
+        StatutCommande statut = StatutCommandeDto.convertToEntity(statutDto);
         return statutCommandeService.updateStatutCommande(id, statut)
-                .map(updatedStatut -> ResponseEntity.ok(convertToDto(updatedStatut)))
+                .map(updatedStatut -> ResponseEntity.ok(StatutCommandeDto.convertToDto(updatedStatut)))
                 .orElse(ResponseEntity.notFound().build());
     }
 
