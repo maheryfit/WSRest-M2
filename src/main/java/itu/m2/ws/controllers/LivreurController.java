@@ -1,19 +1,31 @@
 package itu.m2.ws.controllers;
 
-import itu.m2.ws.dto.CommandeDto;
-import itu.m2.ws.dto.LivreurDto;
-import itu.m2.ws.models.Livreur;
-import itu.m2.ws.models.Utilisateur;
-import itu.m2.ws.enums.Role;
-import itu.m2.ws.services.CommandeService;
-import itu.m2.ws.services.LivreurService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import jakarta.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import itu.m2.ws.dto.CommandeDto;
+import itu.m2.ws.dto.LivreurDto;
+import itu.m2.ws.enums.Role;
+import itu.m2.ws.models.StatutLivraison;
+import itu.m2.ws.models.Livreur;
+import itu.m2.ws.models.Utilisateur;
+import itu.m2.ws.services.CommandeService;
+import itu.m2.ws.services.LivraisonService;
+import itu.m2.ws.services.LivreurService;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/livreurs")
@@ -24,6 +36,9 @@ public class LivreurController extends BaseController {
 
     @Autowired
     private CommandeService commandeService;
+
+    @Autowired
+    private LivraisonService livraisonService;
 
     @GetMapping
     public List<LivreurDto> getAllLivreurs() {
@@ -38,34 +53,70 @@ public class LivreurController extends BaseController {
     }
 
     @GetMapping("/me/commandes")
+    @PreAuthorize("hasAnyRole('LIVREUR')")
     public ResponseEntity<List<CommandeDto>> getMyCommandes() {
         String email = getCurrentUserEmail();
-        // Here we need to find the Livreur associated with the user
-        // Assuming livreurService has a method to find by user email
-        // And then fetch the Commandes assigned to this livreur.
-        // Return mock list for compilation until implementation is added
-        return ResponseEntity.ok(List.of());
+        return livreurService.getLivreurByEmail(email)
+                .map(livreur -> {
+                    List<CommandeDto> commandes = livraisonService.getLivraisonsByLivreurId(livreur.getId())
+                            .stream()
+                            .map(livraison -> CommandeDto.convertToDto(livraison.getCommande()))
+                            .collect(Collectors.toList());
+                    return ResponseEntity.ok(commandes);
+                })
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping("/me/commandes/{id}/accepter")
+    @PreAuthorize("hasAnyRole('LIVREUR')")
     public ResponseEntity<CommandeDto> accepterLivraison(@PathVariable Long id) {
-        // Need to link Livreur to Commande/Livraison
-        // Return mock for now
-        return ResponseEntity.ok().build();
+        String email = getCurrentUserEmail();
+        return livreurService.getLivreurByEmail(email)
+                .flatMap(livreur -> livraisonService.getLivraisonByCommandeId(id)
+                        .flatMap(livraison -> {
+                            livraison.setLivreur(livreur);
+                            StatutLivraison statut = new StatutLivraison();
+                            statut.setId(2L); // 2: ACCEPTEE_LIVREUR
+                            livraison.setStatutLivraison(statut);
+                            return livraisonService.updateLivraison(livraison.getId(), livraison);
+                        }))
+                .map(updatedLivraison -> ResponseEntity.ok(CommandeDto.convertToDto(updatedLivraison.getCommande())))
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping("/me/commandes/{id}/en-livraison")
+    @PreAuthorize("hasAnyRole('LIVREUR')")
     public ResponseEntity<CommandeDto> enLivraisonCommande(@PathVariable Long id) {
-        // Need to update StatutLivraison
-        // Return mock for now
-        return ResponseEntity.ok().build();
+        String email = getCurrentUserEmail();
+        return livreurService.getLivreurByEmail(email)
+                .flatMap(livreur -> livraisonService.getLivraisonByCommandeId(id)
+                        .filter(l -> l.getLivreur() != null && l.getLivreur().getId().equals(livreur.getId()))
+                        .flatMap(livraison -> {
+                            StatutLivraison statut = new StatutLivraison();
+                            statut.setId(3L); // 3: EN_LIVRAISON
+                            livraison.setStatutLivraison(statut);
+                            return livraisonService.updateLivraison(livraison.getId(), livraison);
+                        }))
+                .map(updatedLivraison -> ResponseEntity.ok(CommandeDto.convertToDto(updatedLivraison.getCommande())))
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping("/me/commandes/{id}/livree")
+    @PreAuthorize("hasAnyRole('LIVREUR')")
     public ResponseEntity<CommandeDto> livreeCommande(@PathVariable Long id) {
-        // Need to update StatutLivraison and dateLivraisonReelle
-        // Return mock for now
-        return ResponseEntity.ok().build();
+        String email = getCurrentUserEmail();
+        return livreurService.getLivreurByEmail(email)
+                .flatMap(livreur -> livraisonService.getLivraisonByCommandeId(id)
+                        .filter(l -> l.getLivreur() != null && l.getLivreur().getId().equals(livreur.getId()))
+                        .flatMap(livraison -> {
+                            StatutLivraison statut = new StatutLivraison();
+                            statut.setId(4L); // 4: LIVREE
+                            livraison.setStatutLivraison(statut);
+                            livraison.setDateLivraisonReelle(new java.sql.Timestamp(System.currentTimeMillis()));
+                            return livraisonService.updateLivraison(livraison.getId(), livraison);
+                        }))
+                .map(updatedLivraison -> ResponseEntity.ok(CommandeDto.convertToDto(updatedLivraison.getCommande())))
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
@@ -97,11 +148,14 @@ public class LivreurController extends BaseController {
     }
     
     @PatchMapping("/me/statut")
+    @PreAuthorize("hasAnyRole('LIVREUR')")
     public ResponseEntity<LivreurDto> updateMyStatus(@RequestBody String statutStr) {
         String email = getCurrentUserEmail();
-        // Assuming findByEmail exists in service
-        // Mock update for now
-        return ResponseEntity.ok().build();
+        String statut = statutStr.replaceAll("^\"|\"$", "");
+        return livreurService.getLivreurByEmail(email)
+                .flatMap(livreur -> livreurService.updateStatus(livreur.getId(), statut))
+                .map(updatedLivreur -> ResponseEntity.ok(LivreurDto.convertToDto(updatedLivreur)))
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")

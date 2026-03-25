@@ -1,7 +1,5 @@
 package itu.m2.ws.configs;
 
-import itu.m2.ws.services.UtilisateurService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,6 +15,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+import itu.m2.ws.services.UtilisateurService;
+
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -24,7 +24,6 @@ public class SecurityConfig {
 
     final UtilisateurService utilisateurService;
 
-    @Autowired
     public SecurityConfig(UtilisateurService utilisateurService) {
         this.utilisateurService = utilisateurService;
     }
