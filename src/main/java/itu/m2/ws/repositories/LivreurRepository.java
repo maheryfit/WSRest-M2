@@ -9,7 +9,4 @@ import itu.m2.ws.models.Livreur;
 public interface LivreurRepository extends JpaRepository<Livreur, Long> {
     java.util.Optional<Livreur> findByUtilisateurId(Long utilisateurId);
 
-    java.util.Optional<Livreur> findByUtilisateurEmail(String email);
-    
-    java.util.Optional<Livreur> findByLivreurId(Long livreurId);
 }
