@@ -83,6 +83,7 @@ public class LivreurControllerTest {
         when(livreurService.updateStatus(eq(1L), eq(newStatus))).thenReturn(Optional.of(updatedLivreur));
 
         mockMvc.perform(patch("/api/livreurs/me/statut")
+        
                         .content(newStatus)
                         .contentType(MediaType.TEXT_PLAIN)
                         .with(csrf()))
