@@ -26,8 +26,9 @@ public class PaiementController {
     @GetMapping("/commandes/{commandeId}/paiement")
     public ResponseEntity<PaiementDto> getPaiementByCommandeId(@PathVariable Long commandeId) {
         // Needs findByCommandeId in PaiementRepository/Service
-        // Return mock for now
-        return ResponseEntity.notFound().build();
+        return this.paiementService.getPaiementById(commandeId)
+                .map(paiement -> ResponseEntity.ok(PaiementDto.convertToDto(paiement)))
+                .orElse(ResponseEntity.notFound().build());
     }
     
     @PostMapping("/commandes/{commandeId}/paiement")
