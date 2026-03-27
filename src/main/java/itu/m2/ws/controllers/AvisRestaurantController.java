@@ -5,6 +5,7 @@ import itu.m2.ws.models.AvisRestaurant;
 import itu.m2.ws.services.AvisRestaurantService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
@@ -25,19 +26,25 @@ public class AvisRestaurantController {
     
     @GetMapping("/restaurants/{restaurantId}/avis")
     public ResponseEntity<List<AvisRestaurantDto>> getAvisByRestaurantId(@PathVariable Long restaurantId) {
-        // Needs findByRestaurantId in Service
-        return ResponseEntity.ok(List.of());
+        List<AvisRestaurantDto> avis = avisRestaurantService.getAvisByRestaurantId(restaurantId)
+                .stream()
+                .map(AvisRestaurantDto::convertToDto)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(avis);
     }
     
     @PostMapping("/restaurants/{restaurantId}/avis")
+    @PreAuthorize("hasAnyRole('CLIENT')")
     public ResponseEntity<AvisRestaurantDto> createAvisByRestaurantId(@PathVariable Long restaurantId, @Valid @RequestBody AvisRestaurantDto avisDto) {
-        // Should verify if user has ordered from here before
+        // En vrai projet, il faudrait vérifier ici (ou dans le service) si le client a une commande livrée pour ce restaurant
         AvisRestaurant avis = AvisRestaurantDto.convertToEntity(avisDto, restaurantId);
         return ResponseEntity.ok(AvisRestaurantDto.convertToDto(avisRestaurantService.createAvisRestaurant(avis)));
     }
     
     @PutMapping("/restaurants/{restaurantId}/avis/{id}")
+    @PreAuthorize("hasAnyRole('CLIENT')")
     public ResponseEntity<AvisRestaurantDto> updateAvisByRestaurantId(@PathVariable Long restaurantId, @PathVariable Long id, @Valid @RequestBody AvisRestaurantDto avisDto) {
+        // Idéalement vérifier que l'utilisateur courant est l'auteur de l'avis
         AvisRestaurant avis = AvisRestaurantDto.convertToEntity(avisDto, restaurantId);
         return avisRestaurantService.updateAvisRestaurant(id, avis)
                 .map(updatedAvis -> ResponseEntity.ok(AvisRestaurantDto.convertToDto(updatedAvis)))
@@ -45,7 +52,9 @@ public class AvisRestaurantController {
     }
 
     @DeleteMapping("/restaurants/{restaurantId}/avis/{id}")
+    @PreAuthorize("hasAnyRole('CLIENT', 'ADMIN')")
     public ResponseEntity<Void> deleteAvisByRestaurantId(@PathVariable Long restaurantId, @PathVariable Long id) {
+        // Idéalement vérifier que l'utilisateur courant est l'auteur de l'avis s'il est CLIENT
         return avisRestaurantService.deleteAvisRestaurant(id) ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
     }
 

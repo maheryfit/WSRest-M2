@@ -5,6 +5,7 @@ import itu.m2.ws.models.Plat;
 import itu.m2.ws.services.PlatService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
@@ -31,12 +32,14 @@ public class PlatController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('RESTAURANT')")
     public PlatDto createPlat(@PathVariable Long restaurantId, @Valid @RequestBody PlatDto platDto) {
         Plat plat = PlatDto.convertToEntity(platDto, restaurantId);
         return PlatDto.convertToDto(platService.createPlat(plat));
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('RESTAURANT')")
     public ResponseEntity<PlatDto> updatePlat(@PathVariable Long restaurantId, @PathVariable Long id, @Valid @RequestBody PlatDto platDto) {
         Plat plat = PlatDto.convertToEntity(platDto, restaurantId);
         return platService.getPlatByIdAndRestaurantId(id, restaurantId)
@@ -46,6 +49,7 @@ public class PlatController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('RESTAURANT')")
     public ResponseEntity<Void> deletePlat(@PathVariable Long restaurantId, @PathVariable Long id) {
         return platService.getPlatByIdAndRestaurantId(id, restaurantId)
                 .map(plat -> {

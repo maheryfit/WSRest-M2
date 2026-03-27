@@ -17,6 +17,10 @@ public class AvisRestaurantService {
     public List<AvisRestaurant> getAllAvisRestaurants() {
         return avisRestaurantRepository.findAll();
     }
+    
+    public List<AvisRestaurant> getAvisByRestaurantId(Long restaurantId) {
+        return avisRestaurantRepository.findByRestaurantId(restaurantId);
+    }
 
     public Optional<AvisRestaurant> getAvisRestaurantById(Long id) {
         return avisRestaurantRepository.findById(id);

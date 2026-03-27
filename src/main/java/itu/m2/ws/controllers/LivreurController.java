@@ -41,11 +41,13 @@ public class LivreurController extends BaseController {
     private LivraisonService livraisonService;
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public List<LivreurDto> getAllLivreurs() {
         return livreurService.getAllLivreurs().stream().map(LivreurDto::convertToDto).collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LIVREUR')") // Allow Livreur to see their own details maybe, or restrict strictly to ADMIN if required. Added ADMIN.
     public ResponseEntity<LivreurDto> getLivreurById(@PathVariable Long id) {
         return livreurService.getLivreurById(id)
                 .map(livreur -> ResponseEntity.ok(LivreurDto.convertToDto(livreur)))
@@ -120,6 +122,7 @@ public class LivreurController extends BaseController {
     }
 
     @PostMapping
+    // Usually open for registration or ADMIN.
     public LivreurDto createLivreur(@Valid @RequestBody LivreurDto livreurDto) {
         Utilisateur newUser = new Utilisateur();
         newUser.setEmail(livreurDto.getEmail());
@@ -131,6 +134,7 @@ public class LivreurController extends BaseController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LIVREUR')")
     public ResponseEntity<LivreurDto> updateLivreur(@PathVariable Long id, @Valid @RequestBody LivreurDto livreurDto) {
         return livreurService.getLivreurById(id)
                 .map(existingLivreur -> {
@@ -159,6 +163,7 @@ public class LivreurController extends BaseController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Void> deleteLivreur(@PathVariable Long id) {
         return livreurService.deleteLivreur(id) ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
     }

@@ -2,10 +2,12 @@ package itu.m2.ws.controllers;
 
 import itu.m2.ws.dto.PaiementDto;
 import itu.m2.ws.models.Paiement;
+import itu.m2.ws.models.StatutPaiement;
 import itu.m2.ws.services.PaiementService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import jakarta.validation.Valid;
 import java.util.List;
@@ -24,29 +26,48 @@ public class PaiementController {
     }
     
     @GetMapping("/commandes/{commandeId}/paiement")
+    @PreAuthorize("hasAnyRole('CLIENT', 'RESTAURANT', 'ADMIN')")
     public ResponseEntity<PaiementDto> getPaiementByCommandeId(@PathVariable Long commandeId) {
-        // Needs findByCommandeId in PaiementRepository/Service
-        return this.paiementService.getPaiementById(commandeId)
+        return paiementService.getPaiementByCommandeId(commandeId)
                 .map(paiement -> ResponseEntity.ok(PaiementDto.convertToDto(paiement)))
                 .orElse(ResponseEntity.notFound().build());
     }
     
     @PostMapping("/commandes/{commandeId}/paiement")
+    @PreAuthorize("hasAnyRole('CLIENT')")
     public ResponseEntity<PaiementDto> initierPaiement(@PathVariable Long commandeId, @RequestBody PaiementDto paiementDto) {
         // Initier un paiement
-        return ResponseEntity.ok().build();
+        if (paiementDto.getStatutPaiementId() == null) {
+            paiementDto.setStatutPaiementId(1L); // 1 = En attente
+        }
+        paiementDto.setCommandeId(commandeId);
+        
+        Paiement paiement = PaiementDto.convertToEntity(paiementDto);
+        Paiement savedPaiement = paiementService.createPaiement(paiement);
+        
+        return ResponseEntity.ok(PaiementDto.convertToDto(savedPaiement));
     }
     
     @PostMapping("/paiements/{id}/confirmer")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SYSTEM')")
     public ResponseEntity<PaiementDto> confirmerPaiement(@PathVariable Long id) {
-        // Update statut to SUCCES
-        return ResponseEntity.ok().build();
+        StatutPaiement statutSucces = new StatutPaiement();
+        statutSucces.setId(2L); // 2 = Succès
+        
+        return paiementService.updateStatutPaiement(id, statutSucces)
+                .map(updatedPaiement -> ResponseEntity.ok(PaiementDto.convertToDto(updatedPaiement)))
+                .orElse(ResponseEntity.notFound().build());
     }
     
     @PostMapping("/paiements/{id}/echouer")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SYSTEM')")
     public ResponseEntity<PaiementDto> echouerPaiement(@PathVariable Long id) {
-        // Update statut to ECHEC
-        return ResponseEntity.ok().build();
+        StatutPaiement statutEchec = new StatutPaiement();
+        statutEchec.setId(0L); // 0 = Échec ou 3, à ajuster selon la BDD
+        
+        return paiementService.updateStatutPaiement(id, statutEchec)
+                .map(updatedPaiement -> ResponseEntity.ok(PaiementDto.convertToDto(updatedPaiement)))
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/paiements/{id}")
