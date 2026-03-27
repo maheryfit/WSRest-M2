@@ -73,13 +73,4 @@ public class StatsController extends BaseController {
         List<CommandesParJourDto> commandes = commandeRepository.countCommandesByJour();
         return ResponseEntity.ok(commandes);
     }
-
-    @GetMapping("/recommandations/restaurants")
-    @PreAuthorize("hasAnyRole('CLIENT', 'ADMIN')")
-    public ResponseEntity<List<RecommandationRestaurantDto>> getRecommandationsRestaurants() {
-        // Pour l'exemple, on ne se base pas sur le client, mais on pourrait
-        // utiliser clientRepository.findByEmail(email) pour obtenir le client et ses préférences
-        List<RecommandationRestaurantDto> recommandations = restaurantRepository.findRecommandationsForClient(null);
-        return ResponseEntity.ok(recommandations);
-    }
 }
