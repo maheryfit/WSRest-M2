@@ -6,7 +6,10 @@ import itu.m2.ws.models.Commande;
 import itu.m2.ws.models.StatutCommande;
 import itu.m2.ws.services.ClientService;
 import itu.m2.ws.services.CommandeService;
+import itu.m2.ws.services.LivraisonService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +17,9 @@ import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequestMapping("/api/commandes")
@@ -26,6 +32,9 @@ public class CommandeController extends BaseController {
     @Autowired
     private ClientService clientService;
 
+    @Autowired
+    private LivraisonService livraisonService;
+
     @GetMapping
     @PreAuthorize("hasRole('CLIENT')")
     public ResponseEntity<List<CommandeDto>> getMyCommandes() {
@@ -34,7 +43,7 @@ public class CommandeController extends BaseController {
                 .map(client -> {
                     List<CommandeDto> commandes = commandeService.getCommandesByClientId(client.getId())
                             .stream()
-                            .map(CommandeDto::convertToDto)
+                            .map(this::addHateoasLinks)
                             .collect(Collectors.toList());
                     return ResponseEntity.ok(commandes);
                 })
@@ -45,15 +54,47 @@ public class CommandeController extends BaseController {
     @PreAuthorize("hasAnyRole('CLIENT', 'RESTAURANT', 'LIVREUR', 'ADMIN')")
     public ResponseEntity<CommandeDto> getCommandeById(@PathVariable Long id) {
         return commandeService.getCommandeById(id)
-                .map(commande -> ResponseEntity.ok(CommandeDto.convertToDto(commande)))
+                .map(this::addHateoasLinks)
+                .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    private CommandeDto addHateoasLinks(Commande commande) {
+        CommandeDto dto = CommandeDto.convertToDto(commande);
+        
+        // self
+        dto.add(linkTo(methodOn(CommandeController.class).getCommandeById(commande.getId())).withSelfRel());
+        
+        // restaurant
+        dto.add(linkTo(methodOn(RestaurantController.class).getRestaurantById(commande.getRestaurant().getId())).withRel("restaurant"));
+        
+        // client
+        dto.add(linkTo(methodOn(ClientController.class).getClientById(commande.getClient().getId())).withRel("client"));
+        
+        // livreur (if exists)
+        livraisonService.getLivraisonByCommandeId(commande.getId()).ifPresent(livraison -> {
+            if (livraison.getLivreur() != null) {
+                dto.add(linkTo(methodOn(LivreurController.class).getLivreurById(livraison.getLivreur().getId())).withRel("livreur"));
+            }
+        });
+
+        // next-actions based on status
+        String status = commande.getStatutCommande().getLibelle();
+        if ("CREER".equals(status)) {
+            dto.add(linkTo(methodOn(CommandeController.class).annulerCommande(commande.getId())).withRel("annuler"));
+            dto.add(linkTo(methodOn(RestaurantController.class).accepterCommande(commande.getId())).withRel("accepter"));
+        } else if ("LIVREE".equals(status)) {
+            dto.add(linkTo(methodOn(AvisRestaurantController.class).createAvisByRestaurantId(commande.getRestaurant().getId(), null)).withRel("noter"));
+        }
+
+        return dto;
     }
 
     @PostMapping
     @PreAuthorize("hasRole('CLIENT')")
     public CommandeDto createCommande(@Valid @RequestBody CommandeDto commandeDto) {
         Commande commande = CommandeDto.convertToEntity(commandeDto);
-        return CommandeDto.convertToDto(commandeService.createCommande(commande));
+        return addHateoasLinks(commandeService.createCommande(commande));
     }
 
     @PostMapping("/{id}/annuler")
@@ -63,7 +104,7 @@ public class CommandeController extends BaseController {
         statutAnnuler.setId(1L); 
         
         return commandeService.updateStatutCommande(id, statutAnnuler)
-                .map(updatedCommande -> ResponseEntity.ok(CommandeDto.convertToDto(updatedCommande)))
+                .map(updatedCommande -> ResponseEntity.ok(addHateoasLinks(updatedCommande)))
                 .orElse(ResponseEntity.notFound().build());
     }
 
@@ -72,7 +113,7 @@ public class CommandeController extends BaseController {
     public ResponseEntity<CommandeDto> updateCommande(@PathVariable Long id, @Valid @RequestBody CommandeDto commandeDto) {
         Commande commande = CommandeDto.convertToEntity(commandeDto);
         return commandeService.updateCommande(id, commande)
-                .map(updatedCommande -> ResponseEntity.ok(CommandeDto.convertToDto(updatedCommande)))
+                .map(updatedCommande -> ResponseEntity.ok(addHateoasLinks(updatedCommande)))
                 .orElse(ResponseEntity.notFound().build());
     }
 

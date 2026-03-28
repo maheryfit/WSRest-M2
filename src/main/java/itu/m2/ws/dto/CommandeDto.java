@@ -9,14 +9,17 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.sql.Timestamp;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CommandeDto {
+@EqualsAndHashCode(callSuper = false)
+public class CommandeDto extends RepresentationModel<CommandeDto> {
     private Long id;
 
     @NotNull(message = "L'identifiant du client ne peut pas être nul")
