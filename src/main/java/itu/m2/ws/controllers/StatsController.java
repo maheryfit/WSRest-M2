@@ -1,43 +1,51 @@
 package itu.m2.ws.controllers;
 
+import itu.m2.ws.services.ClientService;
+import itu.m2.ws.services.StatsService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
-public class StatsController {
+public class StatsController extends BaseController {
+
+    @Autowired
+    private StatsService statsService;
+
+    @Autowired
+    private ClientService clientService;
 
     @GetMapping("/stats/restaurants/top")
-    public ResponseEntity<List<Object>> getTopRestaurants(
+    public ResponseEntity<List<Map<String, Object>>> getTopRestaurants(
             @RequestParam(required = false) String from,
             @RequestParam(required = false) String to) {
-        // Implement logic to return top restaurants
-        return ResponseEntity.ok(List.of());
+        return ResponseEntity.ok(statsService.getTopRestaurants(from, to));
     }
 
     @GetMapping("/stats/clients/meilleurs")
-    public ResponseEntity<List<Object>> getMeilleursClients() {
-        // Implement logic to return best clients
-        return ResponseEntity.ok(List.of());
+    public ResponseEntity<List<Map<String, Object>>> getMeilleursClients() {
+        return ResponseEntity.ok(statsService.getMeilleursClients());
     }
 
     @GetMapping("/stats/livreurs/performance")
-    public ResponseEntity<List<Object>> getLivreursPerformance() {
-        // Implement logic to return livreur performance
-        return ResponseEntity.ok(List.of());
+    public ResponseEntity<List<Map<String, Object>>> getLivreursPerformance() {
+        return ResponseEntity.ok(statsService.getLivreursPerformance());
     }
 
     @GetMapping("/stats/commandes/par-jour")
-    public ResponseEntity<List<Object>> getCommandesParJour() {
-        // Implement logic to return orders per day
-        return ResponseEntity.ok(List.of());
+    public ResponseEntity<List<Map<String, Object>>> getCommandesParJour() {
+        return ResponseEntity.ok(statsService.getCommandesParJour());
     }
 
     @GetMapping("/recommandations/restaurants")
-    public ResponseEntity<List<Object>> getRecommandationsRestaurants() {
-        // Implement logic to return recommendations
-        return ResponseEntity.ok(List.of());
+    public ResponseEntity<List<Map<String, Object>>> getRecommandationsRestaurants() {
+        String email = getCurrentUserEmail();
+        return clientService.getClientByEmail(email)
+                .map(client -> ResponseEntity.ok(statsService.getRecommandationsRestaurants(client.getId())))
+                .orElse(ResponseEntity.notFound().build());
     }
 }

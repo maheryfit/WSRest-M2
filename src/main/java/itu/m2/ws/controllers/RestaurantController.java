@@ -1,22 +1,29 @@
 package itu.m2.ws.controllers;
 
-import itu.m2.ws.dto.CommandeDto;
-import itu.m2.ws.dto.RestaurantDto;
-import itu.m2.ws.models.Restaurant;
-import itu.m2.ws.models.Utilisateur;
-import itu.m2.ws.models.StatutCommande;
-import itu.m2.ws.enums.Role;
-import itu.m2.ws.services.CommandeService;
-import itu.m2.ws.services.RestaurantService;
-import itu.m2.ws.services.UtilisateurService;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
+import itu.m2.ws.dto.CommandeDto;
+import itu.m2.ws.dto.RestaurantDto;
+import itu.m2.ws.enums.Role;
+import itu.m2.ws.models.Restaurant;
+import itu.m2.ws.models.StatutCommande;
+import itu.m2.ws.models.Utilisateur;
+import itu.m2.ws.services.CommandeService;
+import itu.m2.ws.services.RestaurantService;
 import jakarta.validation.Valid;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/restaurants")

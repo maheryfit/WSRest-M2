@@ -1,12 +1,13 @@
 package itu.m2.ws.services;
 
-import itu.m2.ws.models.AvisRestaurant;
-import itu.m2.ws.repositories.AvisRestaurantRepository;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import itu.m2.ws.models.AvisRestaurant;
+import itu.m2.ws.repositories.AvisRestaurantRepository;
 
 @Service
 public class AvisRestaurantService {
@@ -16,6 +17,10 @@ public class AvisRestaurantService {
 
     public List<AvisRestaurant> getAllAvisRestaurants() {
         return avisRestaurantRepository.findAll();
+    }
+
+    public List<AvisRestaurant> getAvisByRestaurantId(Long restaurantId) {
+        return avisRestaurantRepository.findByRestaurantId(restaurantId);
     }
 
     public Optional<AvisRestaurant> getAvisRestaurantById(Long id) {

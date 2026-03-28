@@ -22,6 +22,10 @@ public class StatutPaiementService {
         return statutPaiementRepository.findById(id);
     }
 
+    public Optional<StatutPaiement> getStatutPaiementByLibelle(String libelle) {
+        return statutPaiementRepository.findByLibelle(libelle);
+    }
+
     public StatutPaiement createStatutPaiement(StatutPaiement statutPaiement) {
         return statutPaiementRepository.save(statutPaiement);
     }
