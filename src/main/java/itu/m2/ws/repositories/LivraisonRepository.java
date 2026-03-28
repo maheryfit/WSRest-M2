@@ -12,7 +12,7 @@ import java.util.Optional;
 @Repository
 public interface LivraisonRepository extends JpaRepository<Livraison, Long> {
     @Query("SELECT l.livreur.id as livreurId, l.livreur.nom as nom, COUNT(l) as totalLivraisons, " +
-           "AVG(DATEDIFF('MINUTE', l.dateCreation, l.dateLivraisonReelle)) as tempsMoyenMinutes, " +
+           "AVG(TIMESTAMPDIFF(MINUTE, l.dateCreation, l.dateLivraisonReelle)) as tempsMoyenMinutes, " +
            "SUM(CASE WHEN l.dateLivraisonReelle > l.dateLivraisonEstimee THEN 1 ELSE 0 END) * 1.0 / COUNT(l) as tauxRetard " +
            "FROM Livraison l " +
            "WHERE l.dateLivraisonReelle IS NOT NULL " +
@@ -21,4 +21,5 @@ public interface LivraisonRepository extends JpaRepository<Livraison, Long> {
     List<Map<String, Object>> findLivreursPerformance();
     
     Optional<Livraison> findByCommandeId(Long commandeId);
+    List<Livraison> findByLivreurId(Long livreurId);
 }

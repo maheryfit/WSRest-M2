@@ -13,6 +13,7 @@ import java.util.Map;
 @Repository
 public interface CommandeRepository extends JpaRepository<Commande, Long> {
     List<Commande> findByClientId(Long clientId);
+    List<Commande> findByRestaurantId(Long restaurantId);
 
     @Query("SELECT c.restaurant.id as restaurantId, c.restaurant.nom as nom, COUNT(c) as totalCommandes, " +
            "AVG(c.restaurant.noteMoyenne) as noteMoyenne, SUM(c.montantTotal) as chiffreAffaires " +
