@@ -1,5 +1,6 @@
 package itu.m2.ws.configs;
 
+import itu.m2.ws.services.UtilisateurService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,8 +15,6 @@ import org.springframework.security.config.annotation.web.configurers.HeadersCon
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-
-import itu.m2.ws.services.UtilisateurService;
 
 @Configuration
 @EnableWebSecurity
@@ -41,6 +40,8 @@ public class SecurityConfig {
                         // TODO ("enlever /api/** en production")
                         .requestMatchers("/h2-console/**", "/api/utilisateurs/login", "/api/**").permitAll()
                         .anyRequest().authenticated()
+//                                .requestMatchers("/**").permitAll() // TEMPORARY: Allow all requests
+//                                .anyRequest().permitAll()
                 )
                 .headers(headers -> headers
                         .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)
