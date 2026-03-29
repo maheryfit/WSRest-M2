@@ -37,11 +37,8 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        // TODO ("enlever /api/** en production")
-                        .requestMatchers("/h2-console/**", "/api/utilisateurs/login", "/api/**").permitAll()
-                        .anyRequest().authenticated()
-//                                .requestMatchers("/**").permitAll() // TEMPORARY: Allow all requests
-//                                .anyRequest().permitAll()
+                        .requestMatchers("/**").permitAll()
+                        .anyRequest().permitAll()
                 )
                 .headers(headers -> headers
                         .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)

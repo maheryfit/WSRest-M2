@@ -11,6 +11,8 @@ import itu.m2.ws.repositories.UtilisateurRepository;
 import org.jspecify.annotations.NullMarked;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -58,7 +60,9 @@ public class UtilisateurService implements UserDetailsService {
     public Optional<Utilisateur> updateUtilisateur(Long id, Utilisateur utilisateurDetails) {
         return utilisateurRepository.findById(id).map(utilisateur -> {
             utilisateur.setEmail(utilisateurDetails.getEmail());
-            utilisateur.setMotDePasseHash(bCryptPasswordEncoder.encode(utilisateurDetails.getMotDePasseHash()));
+            if (utilisateurDetails.getMotDePasseHash() != null && !utilisateurDetails.getMotDePasseHash().isEmpty()) {
+                utilisateur.setMotDePasseHash(bCryptPasswordEncoder.encode(utilisateurDetails.getMotDePasseHash()));
+            }
             utilisateur.setRole(utilisateurDetails.getRole());
             utilisateur.setActif(utilisateurDetails.isActif());
             return utilisateurRepository.save(utilisateur);
@@ -71,14 +75,26 @@ public class UtilisateurService implements UserDetailsService {
             return true;
         }).orElse(false);
     }
-    // SPRING SECURITY
+
+    /**
+     * Authentifie un utilisateur par email et mot de passe.
+     * Amélioré avec des exceptions spécifiques et vérification du statut actif.
+     */
     public Utilisateur logIn(String email, String motDePasse) {
-        Utilisateur utilisateur;
-        utilisateur = utilisateurRepository.findUtilisateurByEmail(email);
-        if (utilisateur == null)
-            throw new UsernameNotFoundException("Invalid email or password");
-        if (!isPasswordValid(motDePasse, utilisateur.getMotDePasseHash()))
-            throw new UsernameNotFoundException("Invalid email or password");
+        Utilisateur utilisateur = utilisateurRepository.findUtilisateurByEmail(email);
+        
+        if (utilisateur == null) {
+            throw new BadCredentialsException("Email introuvable : " + email);
+        }
+
+        if (!utilisateur.isActif()) {
+            throw new DisabledException("Ce compte est désactivé");
+        }
+
+        if (!bCryptPasswordEncoder.matches(motDePasse, utilisateur.getMotDePasseHash())) {
+            throw new BadCredentialsException("Le mot de passe ne correspond pas pour : " + email);
+        }
+
         return utilisateur;
     }
 
@@ -153,10 +169,6 @@ public class UtilisateurService implements UserDetailsService {
     }
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
-    }
-
-    private boolean isPasswordValid(String rawPassword, String encodedPassword) {
-        return bCryptPasswordEncoder.matches(rawPassword, encodedPassword);
     }
 
 }

@@ -52,6 +52,7 @@ public class RestaurantController extends BaseController {
     public ResponseEntity<List<CommandeDto>> getMyCommandes() {
         String email = getCurrentUserEmail();
         // Here we need to find the restaurant associated with the user
+
         // Assuming restaurantService has a method to find by user email
         // Return mock list for compilation until implementation is added
         return ResponseEntity.ok(List.of());
