@@ -25,7 +25,7 @@ public class UtilisateurDto {
     private String motDePasse;
 
     @NotNull(message = "Le rôle ne peut pas être nul")
-    private Role role;
+    private Role role = Role.ADMIN;
 
     private boolean actif;
 

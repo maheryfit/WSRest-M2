@@ -3,6 +3,7 @@ package itu.m2.ws.services;
 import java.util.List;
 import java.util.Optional;
 
+import itu.m2.ws.enums.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +23,9 @@ public class LivreurService {
     @Autowired
     private UtilisateurRepository utilisateurRepository;
 
+    @Autowired
+    private UtilisateurService utilisateurService;
+
     public List<Livreur> getAllLivreurs() {
         return livreurRepository.findAll();
     }
@@ -40,7 +44,7 @@ public class LivreurService {
 
     @Transactional
     public Livreur createLivreur(Livreur livreur) {
-        Utilisateur savedUtilisateur = utilisateurRepository.save(livreur.getUtilisateur());
+        Utilisateur savedUtilisateur = utilisateurService.createUtilisateur(livreur.getUtilisateur());
         livreur.setUtilisateur(savedUtilisateur);
         return livreurRepository.save(livreur);
     }
@@ -48,7 +52,7 @@ public class LivreurService {
     @Transactional
     public Optional<Livreur> updateLivreur(Long id, Livreur livreurDetails) {
         return livreurRepository.findById(id).map(livreur -> {
-            utilisateurRepository.save(livreurDetails.getUtilisateur());
+            utilisateurService.updateUtilisateur(livreurDetails.getUtilisateur(), Role.LIVREUR);
             livreur.setUtilisateur(livreurDetails.getUtilisateur());
             livreur.setNom(livreurDetails.getNom());
             livreur.setPrenom(livreurDetails.getPrenom());

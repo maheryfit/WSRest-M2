@@ -51,7 +51,8 @@ public class ClientController extends BaseController {
                 .map(existingClient -> {
                     Utilisateur utilisateurToUpdate = existingClient.getUtilisateur();
                     utilisateurToUpdate.setEmail(clientDto.getEmail());
-                    // Password update logic should be handled carefully, maybe in a separate endpoint
+                    // Password update logic should be handled carefully, maybe in a separate
+                    // endpoint
 
                     Client clientToUpdate = ClientDto.convertToEntity(clientDto, utilisateurToUpdate);
                     clientToUpdate.setId(existingClient.getId());
@@ -72,7 +73,8 @@ public class ClientController extends BaseController {
                     List<Adresse> adresses = adresseService.getAllAdresses().stream()
                             .filter(a -> a.getClient().getId().equals(client.getId()))
                             .toList();
-                    return ResponseEntity.ok(adresses.stream().map(AdresseDto::convertToDto).collect(Collectors.toList()));
+                    return ResponseEntity
+                            .ok(adresses.stream().map(AdresseDto::convertToDto).collect(Collectors.toList()));
                 })
                 .orElse(ResponseEntity.notFound().build());
     }
@@ -98,14 +100,14 @@ public class ClientController extends BaseController {
                 .map(client -> adresseService.getAdresseById(id)
                         .filter(adresse -> adresse.getClient().getId().equals(client.getId()))
                         .map(adresse -> ResponseEntity.ok(AdresseDto.convertToDto(adresse)))
-                        .orElse(ResponseEntity.notFound().build())
-                )
+                        .orElse(ResponseEntity.notFound().build()))
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PutMapping("/me/adresses/{id}")
     @PreAuthorize("hasAnyRole('CLIENT')")
-    public ResponseEntity<AdresseDto> updateMyAdresse(@PathVariable Long id, @Valid @RequestBody AdresseDto adresseDto) {
+    public ResponseEntity<AdresseDto> updateMyAdresse(@PathVariable Long id,
+            @Valid @RequestBody AdresseDto adresseDto) {
         String email = getCurrentUserEmail();
         return clientService.getClientByEmail(email)
                 .map(client -> adresseService.getAdresseById(id)
@@ -117,8 +119,7 @@ public class ClientController extends BaseController {
                                     .map(updatedAdresse -> ResponseEntity.ok(AdresseDto.convertToDto(updatedAdresse)))
                                     .orElse(ResponseEntity.notFound().build());
                         })
-                        .orElse(ResponseEntity.notFound().build())
-                )
+                        .orElse(ResponseEntity.notFound().build()))
                 .orElse(ResponseEntity.notFound().build());
     }
 
@@ -133,8 +134,7 @@ public class ClientController extends BaseController {
                             adresseService.deleteAdresse(id);
                             return ResponseEntity.ok().<Void>build();
                         })
-                        .orElse(ResponseEntity.notFound().build())
-                )
+                        .orElse(ResponseEntity.notFound().build()))
                 .orElse(ResponseEntity.notFound().build());
     }
 
@@ -164,7 +164,8 @@ public class ClientController extends BaseController {
                 .map(existingClient -> {
                     Utilisateur utilisateurToUpdate = existingClient.getUtilisateur();
                     utilisateurToUpdate.setEmail(clientDto.getEmail());
-                    // Password update logic should be handled carefully, maybe in a separate endpoint
+                    // Password update logic should be handled carefully, maybe in a separate
+                    // endpoint
 
                     Client clientToUpdate = ClientDto.convertToEntity(clientDto, utilisateurToUpdate);
                     clientToUpdate.setId(id);

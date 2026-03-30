@@ -48,18 +48,23 @@ public class RestaurantController extends BaseController {
     }
 
     @GetMapping("/me/commandes")
-    @PreAuthorize("hasAnyRole('CLIENT')")
+    @PreAuthorize("hasAnyRole('RESTAURANT')")
     public ResponseEntity<List<CommandeDto>> getMyCommandes() {
         String email = getCurrentUserEmail();
-        // Here we need to find the restaurant associated with the user
-
-        // Assuming restaurantService has a method to find by user email
-        // Return mock list for compilation until implementation is added
-        return ResponseEntity.ok(List.of());
+        
+        return restaurantService.getRestaurantByEmail(email)
+                .map(restaurant -> {
+                    List<CommandeDto> commandes = commandeService.getCommandesByRestaurantId(restaurant.getId())
+                            .stream()
+                            .map(CommandeDto::convertToDto)
+                            .collect(Collectors.toList());
+                    return ResponseEntity.ok(commandes);
+                })
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping("/me/commandes/{id}/accepter")
-    @PreAuthorize("hasAnyRole('CLIENT')")
+    @PreAuthorize("hasAnyRole('RESTAURANT')")
     public ResponseEntity<CommandeDto> accepterCommande(@PathVariable Long id) {
         StatutCommande statut = new StatutCommande();
         statut.setId(2L); // 2: ACCEPTEE_RESTAURANT
@@ -69,7 +74,7 @@ public class RestaurantController extends BaseController {
     }
 
     @PostMapping("/me/commandes/{id}/refuser")
-    @PreAuthorize("hasAnyRole('CLIENT')")
+    @PreAuthorize("hasAnyRole('RESTAURANT')")
     public ResponseEntity<CommandeDto> refuserCommande(@PathVariable Long id) {
         StatutCommande statut = new StatutCommande();
         statut.setId(0L); // 0: ANNULER
@@ -79,7 +84,7 @@ public class RestaurantController extends BaseController {
     }
 
     @PostMapping("/me/commandes/{id}/en-preparation")
-    @PreAuthorize("hasAnyRole('CLIENT')")
+    @PreAuthorize("hasAnyRole('RESTAURANT')")
     public ResponseEntity<CommandeDto> enPreparationCommande(@PathVariable Long id) {
         StatutCommande statut = new StatutCommande();
         statut.setId(3L); // 3: EN_PREPARATION
@@ -89,7 +94,7 @@ public class RestaurantController extends BaseController {
     }
 
     @PostMapping("/me/commandes/{id}/pretee")
-    @PreAuthorize("hasAnyRole('CLIENT')")
+    @PreAuthorize("hasAnyRole('RESTAURANT')")
     public ResponseEntity<CommandeDto> preteeCommande(@PathVariable Long id) {
         StatutCommande statut = new StatutCommande();
         statut.setId(4L); // 4: PRET

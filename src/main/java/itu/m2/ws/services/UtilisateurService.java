@@ -69,6 +69,12 @@ public class UtilisateurService implements UserDetailsService {
         });
     }
 
+    public void updateUtilisateur(Utilisateur utilisateur, Role role) {
+        utilisateur.setRole(role);
+        utilisateur.setMotDePasseHash(bCryptPasswordEncoder.encode(utilisateur.getMotDePasseHash()));
+        utilisateurRepository.save(utilisateur);
+    }
+
     public boolean deleteUtilisateur(Long id) {
         return utilisateurRepository.findById(id).map(utilisateur -> {
             utilisateurRepository.delete(utilisateur);
@@ -82,7 +88,7 @@ public class UtilisateurService implements UserDetailsService {
      */
     public Utilisateur logIn(String email, String motDePasse) {
         Utilisateur utilisateur = utilisateurRepository.findUtilisateurByEmail(email);
-        
+
         if (utilisateur == null) {
             throw new BadCredentialsException("Email introuvable : " + email);
         }
@@ -110,12 +116,20 @@ public class UtilisateurService implements UserDetailsService {
         return new UtilisateurDetails(user, mapRolesToAuthorities(roles));
     }
 
-    public UsernamePasswordAuthenticationToken getAuthenticationToken(final String token, final UserDetails userDetails) {
+    public UsernamePasswordAuthenticationToken getAuthenticationToken(final String token,
+            final UserDetails userDetails) {
         Claims claims = extractAllClaims(token);
 
+        Object roleClaim = claims.get("role");
+        String roleStrRaw = roleClaim != null ? roleClaim.toString() : "";
+        System.out.print(roleStrRaw);
         final Collection<? extends GrantedAuthority> authorities = Arrays
-                .stream(claims.get("role").toString().split(","))
-                .map(SimpleGrantedAuthority::new)
+                .stream(roleStrRaw.split(","))
+                .filter(s -> !s.isEmpty())
+                .map(String::trim)
+                .map(roleStr -> {
+                    return new SimpleGrantedAuthority(roleStr);
+                })
                 .collect(Collectors.toList());
         return new UsernamePasswordAuthenticationToken(userDetails, "", authorities);
     }
@@ -149,9 +163,10 @@ public class UtilisateurService implements UserDetailsService {
         return Keys.hmacShaKeyFor(KEY.getBytes());
     }
 
-    public String generateToken(String email)  {
+    public String generateToken(String email) {
         return createToken(loadUserByUsername(email));
     }
+
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
@@ -160,13 +175,16 @@ public class UtilisateurService implements UserDetailsService {
     private Boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }
+
     public Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
     }
+
     public Boolean validateToken(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
+
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
     }

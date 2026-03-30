@@ -1,5 +1,6 @@
 package itu.m2.ws.services;
 
+import itu.m2.ws.enums.Role;
 import itu.m2.ws.models.Client;
 import itu.m2.ws.models.Utilisateur;
 import itu.m2.ws.repositories.ClientRepository;
@@ -16,6 +17,9 @@ public class ClientService {
 
     @Autowired
     private ClientRepository clientRepository;
+
+    @Autowired
+    private UtilisateurService utilisateurService;
 
     @Autowired
     private UtilisateurRepository utilisateurRepository;
@@ -38,7 +42,7 @@ public class ClientService {
 
     @Transactional
     public Client createClient(Client client) {
-        Utilisateur savedUtilisateur = utilisateurRepository.save(client.getUtilisateur());
+        Utilisateur savedUtilisateur = utilisateurService.createUtilisateur(client.getUtilisateur());
         client.setUtilisateur(savedUtilisateur);
         return clientRepository.save(client);
     }
@@ -46,7 +50,7 @@ public class ClientService {
     @Transactional
     public Optional<Client> updateClient(Long id, Client clientDetails) {
         return clientRepository.findById(id).map(client -> {
-            utilisateurRepository.save(clientDetails.getUtilisateur());
+            utilisateurService.updateUtilisateur(clientDetails.getUtilisateur(), Role.CLIENT);
             client.setUtilisateur(clientDetails.getUtilisateur());
             client.setNom(clientDetails.getNom());
             client.setPrenom(clientDetails.getPrenom());
