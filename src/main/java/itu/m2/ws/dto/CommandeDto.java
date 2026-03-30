@@ -32,7 +32,7 @@ public class CommandeDto extends RepresentationModel<CommandeDto> {
     private Long statutCommandeId;
 
     @Positive(message = "Le montant total doit être un nombre positif")
-    private double montantTotal;
+    private Double montantTotal;
 
     @NotNull(message = "Le mode de paiement ne peut pas être nul")
     private ModePaiement modePaiement;
