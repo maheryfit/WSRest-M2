@@ -42,7 +42,8 @@ public class SecurityConfig {
                         .requestMatchers("/h2-console/**",
                                 "/api/utilisateurs/logout",
                                 "/api/utilisateurs/login",
-                                "/api/clients")
+                                "/api/clients",
+                                "/api/restaurants/**")
                         .permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthFilter,

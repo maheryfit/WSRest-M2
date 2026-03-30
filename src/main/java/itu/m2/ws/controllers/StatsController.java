@@ -1,7 +1,6 @@
 package itu.m2.ws.controllers;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
-import itu.m2.ws.services.ClientService;
 import itu.m2.ws.services.StatsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,9 +17,6 @@ public class StatsController extends BaseController {
 
     @Autowired
     private StatsService statsService;
-
-    @Autowired
-    private ClientService clientService;
 
     @GetMapping("/stats/restaurants/top")
     @PreAuthorize("hasRole('ADMIN')")
