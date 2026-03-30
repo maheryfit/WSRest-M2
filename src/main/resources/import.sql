@@ -1,17 +1,17 @@
 -- 1. ADMIN (Password: password)
-INSERT INTO utilisateurs (email, mot_de_passe_hash, role, actif, date_creation) VALUES ('admin@food.mg', '$2a$10$XFMpt6u.QO08rK5uCg78f.n97D4GvW2p/U788/mH/qI30Lq5y92M2', 'ADMIN', true, CURRENT_TIMESTAMP);
+INSERT INTO utilisateurs (email, mot_de_passe_hash, role, actif, date_creation) VALUES ('admin@food.mg', '$2a$10$v0Qyfco3q0Bz.OjjlcsRb.lmE7XUuEQkKfw2H0CS0..ArOfl98bvm', 'ADMIN', true, CURRENT_TIMESTAMP);
 
 -- 2. CLIENTS (Password: password)
-INSERT INTO utilisateurs (email, mot_de_passe_hash, role, actif, date_creation) VALUES ('client1@gmail.com', '$2a$10$XFMpt6u.QO08rK5uCg78f.n97D4GvW2p/U788/mH/qI30Lq5y92M2', 'CLIENT', true, CURRENT_TIMESTAMP);
-INSERT INTO utilisateurs (email, mot_de_passe_hash, role, actif, date_creation) VALUES ('client2@gmail.com', '$2a$10$XFMpt6u.QO08rK5uCg78f.n97D4GvW2p/U788/mH/qI30Lq5y92M2', 'CLIENT', true, CURRENT_TIMESTAMP);
+INSERT INTO utilisateurs (email, mot_de_passe_hash, role, actif, date_creation) VALUES ('client1@gmail.com', '$2a$10$v0Qyfco3q0Bz.OjjlcsRb.lmE7XUuEQkKfw2H0CS0..ArOfl98bvm', 'CLIENT', true, CURRENT_TIMESTAMP);
+INSERT INTO utilisateurs (email, mot_de_passe_hash, role, actif, date_creation) VALUES ('client2@gmail.com', '$2a$10$v0Qyfco3q0Bz.OjjlcsRb.lmE7XUuEQkKfw2H0CS0..ArOfl98bvm', 'CLIENT', true, CURRENT_TIMESTAMP);
 
 -- 3. RESTAURANTS (Password: password)
-INSERT INTO utilisateurs (email, mot_de_passe_hash, role, actif, date_creation) VALUES ('contact@burgershop.com', '$2a$10$XFMpt6u.QO08rK5uCg78f.n97D4GvW2p/U788/mH/qI30Lq5y92M2', 'RESTAURANT', true, CURRENT_TIMESTAMP);
-INSERT INTO utilisateurs (email, mot_de_passe_hash, role, actif, date_creation) VALUES ('manager@pizzahub.com', '$2a$10$XFMpt6u.QO08rK5uCg78f.n97D4GvW2p/U788/mH/qI30Lq5y92M2', 'RESTAURANT', true, CURRENT_TIMESTAMP);
+INSERT INTO utilisateurs (email, mot_de_passe_hash, role, actif, date_creation) VALUES ('contact@burgershop.com', '$2a$10$v0Qyfco3q0Bz.OjjlcsRb.lmE7XUuEQkKfw2H0CS0..ArOfl98bvm', 'RESTAURANT', true, CURRENT_TIMESTAMP);
+INSERT INTO utilisateurs (email, mot_de_passe_hash, role, actif, date_creation) VALUES ('manager@pizzahub.com', '$2a$10$v0Qyfco3q0Bz.OjjlcsRb.lmE7XUuEQkKfw2H0CS0..ArOfl98bvm', 'RESTAURANT', true, CURRENT_TIMESTAMP);
 
 -- 4. LIVREURS (Password: password)
-INSERT INTO utilisateurs (email, mot_de_passe_hash, role, actif, date_creation) VALUES ('livreur1@express.mg', '$2a$10$XFMpt6u.QO08rK5uCg78f.n97D4GvW2p/U788/mH/qI30Lq5y92M2', 'LIVREUR', true, CURRENT_TIMESTAMP);
-INSERT INTO utilisateurs (email, mot_de_passe_hash, role, actif, date_creation) VALUES ('livreur2@express.mg', '$2a$10$XFMpt6u.QO08rK5uCg78f.n97D4GvW2p/U788/mH/qI30Lq5y92M2', 'LIVREUR', true, CURRENT_TIMESTAMP);
+INSERT INTO utilisateurs (email, mot_de_passe_hash, role, actif, date_creation) VALUES ('livreur1@express.mg', '$2a$10$v0Qyfco3q0Bz.OjjlcsRb.lmE7XUuEQkKfw2H0CS0..ArOfl98bvm', 'LIVREUR', true, CURRENT_TIMESTAMP);
+INSERT INTO utilisateurs (email, mot_de_passe_hash, role, actif, date_creation) VALUES ('livreur2@express.mg', '$2a$10$v0Qyfco3q0Bz.OjjlcsRb.lmE7XUuEQkKfw2H0CS0..ArOfl98bvm', 'LIVREUR', true, CURRENT_TIMESTAMP);
 
 -- Clients
 INSERT INTO clients (utilisateur_id, nom, prenom, telephone) VALUES (2, 'RAKOTO', 'Jean', '0341122233');
