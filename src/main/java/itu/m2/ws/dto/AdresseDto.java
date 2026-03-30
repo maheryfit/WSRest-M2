@@ -14,7 +14,6 @@ import lombok.NoArgsConstructor;
 public class AdresseDto {
     private Long id;
 
-    @NotNull(message = "L'identifiant du client ne peut pas être nul")
     private Long clientId;
 
     @NotBlank(message = "Le libellé ne peut pas être vide")

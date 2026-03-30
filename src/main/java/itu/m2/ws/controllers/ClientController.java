@@ -51,9 +51,6 @@ public class ClientController extends BaseController {
                 .map(existingClient -> {
                     Utilisateur utilisateurToUpdate = existingClient.getUtilisateur();
                     utilisateurToUpdate.setEmail(clientDto.getEmail());
-                    // Password update logic should be handled carefully, maybe in a separate
-                    // endpoint
-
                     Client clientToUpdate = ClientDto.convertToEntity(clientDto, utilisateurToUpdate);
                     clientToUpdate.setId(existingClient.getId());
 

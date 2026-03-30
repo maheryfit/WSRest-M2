@@ -17,6 +17,25 @@ INSERT INTO utilisateurs (email, mot_de_passe_hash, role, actif, date_creation) 
 INSERT INTO clients (utilisateur_id, nom, prenom, telephone) VALUES (2, 'RAKOTO', 'Jean', '0341122233');
 INSERT INTO clients (utilisateur_id, nom, prenom, telephone) VALUES (3, 'RANDRIA', 'Marie', '0324455566');
 
+-- Adresse
+INSERT INTO adresses (client_id, libelle, rue, ville, code_postal, latitude, longitude, par_defaut) VALUES
+-- Client 1
+(1, 'Domicile', 'Avenue de l''Indépendance, Analakely', 'Antananarivo', '101', -18.903780, 47.525530, TRUE),
+(1, 'Bureau Zone Galaxy', 'Route des Hydrocarbures, Ankorondrano', 'Antananarivo', '101', -18.882480, 47.525160, FALSE),
+-- Client 2
+(2, 'Maison', 'Lot II A, Ambohipo', 'Antananarivo', '101', -18.927230, 47.540120, TRUE),
+(2, 'Université (Faculté des Sciences)', 'Campus Universitaire Ambohitsaina, Ankatso', 'Antananarivo', '101', -18.915000, 47.550180, FALSE),
+-- Client 3
+(3, 'Résidence Ivato', 'Route Principale, Ivato', 'Antananarivo', '105', -18.805540, 47.478980, TRUE),
+(3, 'Boutique Tsaralalàna', 'Rue de Liège, Tsaralalàna', 'Antananarivo', '101', -18.906950, 47.520440, FALSE),
+-- Client 4
+(4, 'Maison familiale', 'Avenue d''Itaosy, Cité Itaosy', 'Antananarivo', '102', -18.940710, 47.477650, TRUE),
+(4, 'Zone Forello', 'Z.I. Forello, Tanjombato', 'Antananarivo', '102', -18.966370, 47.521870, FALSE),
+-- Client 5
+(5, 'Chez moi', 'Lot III F, Andoharanofotsy', 'Antananarivo', '102', -18.972350, 47.529850, TRUE),
+(5, 'Atelier Couture', 'Cité des 67 Ha, Sud', 'Antananarivo', '101', -18.901520, 47.511380, FALSE);
+
+
 -- Restaurants
 INSERT INTO restaurants (utilisateur_id, nom, description, telephone, adresse, ville, latitude, longitude, ouvert, note_moyenne) VALUES (4, 'Burger Shop', 'Les meilleurs burgers de la ville', '0202233344', '12 Rue de France', 'Antananarivo', -18.8792, 47.5079, true, 4.5);
 INSERT INTO restaurants (utilisateur_id, nom, description, telephone, adresse, ville, latitude, longitude, ouvert, note_moyenne) VALUES (5, 'Pizza Hub', 'Pizzas artisanales au feu de bois', '0202255566', '45 Avenue de l Indépendance', 'Antananarivo', -18.8750, 47.5050, true, 4.2);
