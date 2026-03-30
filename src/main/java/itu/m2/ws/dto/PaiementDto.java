@@ -34,8 +34,7 @@ public class PaiementDto {
                 paiement.getCommande().getId(),
                 paiement.getMontant(),
                 paiement.getStatutPaiement().getId(),
-                paiement.getDatePaiement()
-        );
+                paiement.getDatePaiement());
     }
 
     public static Paiement convertToEntity(PaiementDto paiementDto) {

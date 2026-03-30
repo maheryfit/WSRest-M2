@@ -9,10 +9,6 @@ INSERT INTO utilisateurs (email, mot_de_passe_hash, role, actif, date_creation) 
 INSERT INTO utilisateurs (email, mot_de_passe_hash, role, actif, date_creation) VALUES ('contact@burgershop.com', '$2a$10$v0Qyfco3q0Bz.OjjlcsRb.lmE7XUuEQkKfw2H0CS0..ArOfl98bvm', 'RESTAURANT', true, CURRENT_TIMESTAMP);
 INSERT INTO utilisateurs (email, mot_de_passe_hash, role, actif, date_creation) VALUES ('manager@pizzahub.com', '$2a$10$v0Qyfco3q0Bz.OjjlcsRb.lmE7XUuEQkKfw2H0CS0..ArOfl98bvm', 'RESTAURANT', true, CURRENT_TIMESTAMP);
 
--- 4. LIVREURS (Password: password)
-INSERT INTO utilisateurs (email, mot_de_passe_hash, role, actif, date_creation) VALUES ('livreur1@express.mg', '$2a$10$v0Qyfco3q0Bz.OjjlcsRb.lmE7XUuEQkKfw2H0CS0..ArOfl98bvm', 'LIVREUR', true, CURRENT_TIMESTAMP);
-INSERT INTO utilisateurs (email, mot_de_passe_hash, role, actif, date_creation) VALUES ('livreur2@express.mg', '$2a$10$v0Qyfco3q0Bz.OjjlcsRb.lmE7XUuEQkKfw2H0CS0..ArOfl98bvm', 'LIVREUR', true, CURRENT_TIMESTAMP);
-
 -- Clients
 INSERT INTO clients (utilisateur_id, nom, prenom, telephone) VALUES (2, 'RAKOTO', 'Jean', '0341122233');
 INSERT INTO clients (utilisateur_id, nom, prenom, telephone) VALUES (3, 'RANDRIA', 'Marie', '0324455566');
@@ -46,10 +42,6 @@ INSERT INTO plats (restaurant_id, nom, description, prix, categorie, disponible)
 INSERT INTO plats (restaurant_id, nom, description, prix, categorie, disponible) VALUES (2, 'Pizza Margherita', 'Sauce tomate, mozzarella, basilic frais', 12000.0, 'Pizza', true);
 INSERT INTO plats (restaurant_id, nom, description, prix, categorie, disponible) VALUES (2, 'Pizza Reine', 'Sauce tomate, mozzarella, jambon, champignons', 16000.0, 'Pizza', true);
 
--- Livreurs
-INSERT INTO livreurs (utilisateur_id, nom, prenom, telephone, statut) VALUES (6, 'ANDRIANINA', 'Paul', '0331122334', 'DISPONIBLE');
-INSERT INTO livreurs (utilisateur_id, nom, prenom, telephone, statut) VALUES (7, 'SOAVA', 'Lova', '0345566778', 'EN_LIVRAISON');
-
 -- Statuts Commande
 INSERT INTO statuts_commande (id, libelle, rang) VALUES (1, 'ANNULER', 0);
 INSERT INTO statuts_commande (id, libelle, rang) VALUES (2,'CREER', 1);
@@ -63,8 +55,3 @@ INSERT INTO statuts_paiement (id, libelle, rang) VALUES (1,'INITIALISE', 1);
 INSERT INTO statuts_paiement (id, libelle, rang) VALUES (2,'SUCCES', 2);
 INSERT INTO statuts_paiement (id, libelle, rang) VALUES (3,'ECHEC', 0);
 
--- Statuts Livraison
-INSERT INTO statuts_livraison (id, libelle, rang) VALUES (1,'EN_ATTENTE', 1);
-INSERT INTO statuts_livraison (id, libelle, rang) VALUES (2,'ACCEPTEE_LIVREUR', 2);
-INSERT INTO statuts_livraison (id, libelle, rang) VALUES (3,'EN_COURS', 3);
-INSERT INTO statuts_livraison (id, libelle, rang) VALUES (4,'TERMINEE', 4);

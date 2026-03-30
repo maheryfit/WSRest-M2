@@ -18,7 +18,7 @@ public interface CommandeRepository extends JpaRepository<Commande, Long> {
     @Query("SELECT c.restaurant.id as restaurantId, c.restaurant.nom as nom, COUNT(c) as totalCommandes, " +
            "AVG(c.restaurant.noteMoyenne) as noteMoyenne, SUM(c.montantTotal) as chiffreAffaires " +
            "FROM Commande c " +
-           "WHERE c.statutCommande.libelle = 'LIVREE' " +
+           "WHERE c.statutCommande.libelle = 'PAYEE' " +
            "AND (:from IS NULL OR c.dateCreation >= :from) " +
            "AND (:to IS NULL OR c.dateCreation <= :to) " +
            "GROUP BY c.restaurant.id, c.restaurant.nom " +
@@ -28,7 +28,7 @@ public interface CommandeRepository extends JpaRepository<Commande, Long> {
     @Query("SELECT c.client.id as clientId, c.client.nom as nom, SUM(c.montantTotal) as totalDepense, " +
            "COUNT(c) as nombreCommandes, AVG(c.montantTotal) as panierMoyen " +
            "FROM Commande c " +
-           "WHERE c.statutCommande.libelle = 'LIVREE' " +
+           "WHERE c.statutCommande.libelle = 'PAYEE' " +
            "GROUP BY c.client.id, c.client.nom " +
            "ORDER BY SUM(c.montantTotal) DESC")
     List<Map<String, Object>> findMeilleursClients();

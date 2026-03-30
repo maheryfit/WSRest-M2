@@ -1,0 +1,638 @@
+{
+  "info": {
+    "_postman_id": "b2c3d4e5-f6a7-8901-bcde-f23456789012",
+    "name": "WSRest-M2 - Avis Restaurants Antananarivo",
+    "description": "10 avis restaurants basés sur les données réelles de import.sql.\n\nDonnées de référence (import.sql) :\n- Client 1 : client1@gmail.com / password → clientId=1 (RAKOTO Jean)\n- Client 2 : client2@gmail.com / password → clientId=2 (RANDRIA Marie)\n- Restaurant 1 : contact@burgershop.com → Burger Shop\n- Restaurant 2 : manager@pizzahub.com → Pizza Hub\n\nRègle backend : POST /restaurants/{id}/avis exige que le CLIENT ait au moins une commande dans ce restaurant.\nContournement disponible : POST /avisrestaurants (sans vérification, sans auth).\n\nOrdre recommandé :\n1. Login clients\n2. Créer commandes (pour satisfaire la règle métier)\n3. Poster les 10 avis\n\nVariable : base_url = http://localhost:8080",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{jwt_token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8080",
+      "type": "string"
+    },
+    {
+      "key": "jwt_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "token_client1",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "token_client2",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "0 - Auth",
+      "item": [
+        {
+          "name": "Login Client 1 (RAKOTO Jean - client1@gmail.com)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.collectionVariables.set('token_client1', pm.response.text());",
+                  "pm.collectionVariables.set('jwt_token', pm.response.text());",
+                  "console.log('Token Client 1 sauvegardé !');"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"client1@gmail.com\",\n  \"motDePasse\": \"password\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/utilisateurs/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "utilisateurs",
+                "login"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Login Client 2 (RANDRIA Marie - client2@gmail.com)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.collectionVariables.set('token_client2', pm.response.text());",
+                  "console.log('Token Client 2 sauvegardé !');"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"client2@gmail.com\",\n  \"motDePasse\": \"password\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/utilisateurs/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "utilisateurs",
+                "login"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "1 - Prérequis Commandes (règle métier avis)",
+      "description": "Le backend vérifie que le client a au moins une commande dans le restaurant avant d'accepter un avis via /restaurants/{id}/avis.\nCes commandes satisfont cette condition pour Client 1 (Burger Shop) et Client 2 (Pizza Hub).",
+      "item": [
+        {
+          "name": "Commande Client 1 → Burger Shop (REST ID=1)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_client1}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"restaurantId\": 1,\n  \"modePaiement\": \"MOBILE_MONEY\",\n  \"lignesCommandes\": [\n    { \"platId\": 1, \"quantite\": 1, \"prixUnitaire\": 15000 }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/commandes",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "commandes"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Commande Client 2 → Pizza Hub (REST ID=2)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_client2}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"restaurantId\": 2,\n  \"modePaiement\": \"CASH\",\n  \"lignesCommandes\": [\n    { \"platId\": 3, \"quantite\": 2, \"prixUnitaire\": 12000 }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/commandes",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "commandes"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Commande Client 1 → Pizza Hub (REST ID=2)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_client1}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"restaurantId\": 2,\n  \"modePaiement\": \"CARTE\",\n  \"lignesCommandes\": [\n    { \"platId\": 4, \"quantite\": 1, \"prixUnitaire\": 16000 }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/commandes",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "commandes"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Commande Client 2 → Burger Shop (REST ID=1)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_client2}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"restaurantId\": 1,\n  \"modePaiement\": \"CASH\",\n  \"lignesCommandes\": [\n    { \"platId\": 2, \"quantite\": 1, \"prixUnitaire\": 18000 }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/commandes",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "commandes"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2 - 10 Avis Restaurants (endpoint sécurisé CLIENT)",
+      "description": "Endpoint : POST /api/restaurants/{restaurantId}/avis\nRequiert : token CLIENT + avoir une commande dans ce restaurant.\nLe clientId est résolu automatiquement via le token JWT.\n\nRestaurants disponibles (import.sql) :\n- ID 1 : Burger Shop (Antananarivo, note ~4.5)\n- ID 2 : Pizza Hub (Antananarivo, note ~4.2)",
+      "item": [
+        {
+          "name": "Avis 1 - RAKOTO @ Burger Shop ⭐⭐⭐⭐⭐ (note 5)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_client1}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"restaurantId\": 1,\n  \"clientId\": 1,\n  \"note\": 5,\n  \"commentaire\": \"Excellent service ! Le Cheese Burger était juteux et bien garni. Livraison rapide depuis Analakely. Je recommande vivement, le meilleur burger d'Antananarivo !\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/restaurants/1/avis",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "restaurants",
+                "1",
+                "avis"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Avis 2 - RAKOTO @ Burger Shop ⭐⭐⭐⭐ (note 4)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_client1}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"restaurantId\": 1,\n  \"clientId\": 1,\n  \"note\": 4,\n  \"commentaire\": \"Très bon Bacon Burger, la viande est bien cuite. Seul petit bémol : l'attente était un peu longue depuis Ankorondrano. Mais le goût compense largement, je reviendrai !\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/restaurants/1/avis",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "restaurants",
+                "1",
+                "avis"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Avis 3 - RANDRIA @ Pizza Hub ⭐⭐⭐⭐⭐ (note 5)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_client2}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"restaurantId\": 2,\n  \"clientId\": 2,\n  \"note\": 5,\n  \"commentaire\": \"La Pizza Margherita était tout simplement divine ! Pâte bien croustillante cuite au feu de bois, mozzarella fondante, basilic frais. Parfait pour un dîner en famille à Ambohipo. Bravo !\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/restaurants/2/avis",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "restaurants",
+                "2",
+                "avis"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Avis 4 - RANDRIA @ Pizza Hub ⭐⭐⭐⭐ (note 4)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_client2}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"restaurantId\": 2,\n  \"clientId\": 2,\n  \"note\": 4,\n  \"commentaire\": \"Pizza Reine avec jambon et champignons, vraiment délicieuse ! J'ai commandé depuis Ankatso (université) et la livraison était dans les temps. Je retire une étoile car le fromage aurait pu être plus généreux.\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/restaurants/2/avis",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "restaurants",
+                "2",
+                "avis"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Avis 5 - RAKOTO @ Pizza Hub ⭐⭐⭐⭐⭐ (note 5)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_client1}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"restaurantId\": 2,\n  \"clientId\": 1,\n  \"note\": 5,\n  \"commentaire\": \"Meilleure pizza d'Antananarivo ! Commandé depuis mon bureau à Ankorondrano, livrée bien chaude. La pâte au feu de bois est incomparable. Pizza Hub, c'est le top de la ville !\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/restaurants/2/avis",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "restaurants",
+                "2",
+                "avis"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Avis 6 - RANDRIA @ Burger Shop ⭐⭐⭐ (note 3)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_client2}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"restaurantId\": 1,\n  \"clientId\": 2,\n  \"note\": 3,\n  \"commentaire\": \"Burger correct mais pas exceptionnel. La livraison depuis Ivato a pris plus de temps que prévu et le pain était légèrement ramolli à l'arrivée. Le goût reste bon malgré tout, à améliorer côté emballage.\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/restaurants/1/avis",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "restaurants",
+                "1",
+                "avis"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3 - 4 Avis supplémentaires (endpoint direct sans auth)",
+      "description": "Endpoint : POST /api/avisrestaurants\nCet endpoint n'exige pas d'authentification ni de vérification de commande.\nUtilisé pour compléter les 10 avis avec des clientIds/restaurantIds directs.\n\nAttention : clientId et restaurantId doivent exister dans la base.",
+      "item": [
+        {
+          "name": "Avis 7 - Client 1 @ Burger Shop ⭐⭐⭐⭐ (via /avisrestaurants)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"restaurantId\": 1,\n  \"clientId\": 1,\n  \"note\": 4,\n  \"commentaire\": \"Super ambiance, burgers bien préparés. Le Cheese Burger est vraiment mon préféré dans toute la zone d'Analakely. Service rapide et sympathique. Continuez comme ça !\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/avisrestaurants",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "avisrestaurants"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Avis 8 - Client 2 @ Pizza Hub ⭐⭐⭐⭐⭐ (via /avisrestaurants)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"restaurantId\": 2,\n  \"clientId\": 2,\n  \"note\": 5,\n  \"commentaire\": \"Top restaurant ! J'habite à Ambohipo et je commande ici toutes les semaines. Les pizzas sont fraîches, le service au top. La Pizza Reine avec ses champignons est un régal. Très bonne expérience, sans hésitation 5 étoiles !\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/avisrestaurants",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "avisrestaurants"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Avis 9 - Client 1 @ Pizza Hub ⭐⭐⭐ (via /avisrestaurants)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"restaurantId\": 2,\n  \"clientId\": 1,\n  \"note\": 3,\n  \"commentaire\": \"Pizza correcte mais j'attendais mieux. La pâte était un peu trop épaisse pour mon goût ce soir-là. La livraison jusqu'à Ankorondrano s'est bien passée par contre. J'espère que ce n'était qu'une exception car d'habitude c'est bien meilleur.\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/avisrestaurants",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "avisrestaurants"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Avis 10 - Client 2 @ Burger Shop ⭐⭐ (via /avisrestaurants)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"restaurantId\": 1,\n  \"clientId\": 2,\n  \"note\": 2,\n  \"commentaire\": \"Déçue cette fois-ci. Mon Bacon Burger est arrivé froid depuis la Zone Forello à Tanjombato. Le pain n'était pas toasté et la viande semblait réchauffée. Je sais qu'ils peuvent faire mieux, mais cette commande ne m'a pas convaincue. À revoir.\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/avisrestaurants",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "avisrestaurants"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4 - Consultation des Avis",
+      "item": [
+        {
+          "name": "GET Tous les avis",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/avisrestaurants",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "avisrestaurants"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET Avis du Burger Shop (REST ID=1)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/restaurants/1/avis",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "restaurants",
+                "1",
+                "avis"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET Avis de Pizza Hub (REST ID=2)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/restaurants/2/avis",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "restaurants",
+                "2",
+                "avis"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET Avis par ID (1)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/avisrestaurants/1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "avisrestaurants",
+                "1"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
