@@ -47,14 +47,4 @@ public class StatsController extends BaseController {
     public ResponseEntity<List<Map<String, Object>>> getCommandesParJour() {
         return ResponseEntity.ok(statsService.getCommandesParJour());
     }
-
-    @GetMapping("/recommandations/restaurants")
-    @PreAuthorize("hasRole('CLIENT')")
-    @Tag(name = "CLIENT", description = "Endpoints réservés aux clients")
-    public ResponseEntity<List<Map<String, Object>>> getRecommandationsRestaurants() {
-        String email = getCurrentUserEmail();
-        return clientService.getClientByEmail(email)
-                .map(client -> ResponseEntity.ok(statsService.getRecommandationsRestaurants(client.getId())))
-                .orElse(ResponseEntity.notFound().build());
-    }
 }

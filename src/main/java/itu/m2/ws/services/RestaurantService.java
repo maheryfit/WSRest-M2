@@ -1,5 +1,6 @@
 package itu.m2.ws.services;
 
+import itu.m2.ws.enums.Role;
 import itu.m2.ws.models.Restaurant;
 import itu.m2.ws.models.Utilisateur;
 import itu.m2.ws.repositories.RestaurantRepository;
@@ -20,6 +21,9 @@ public class RestaurantService {
     @Autowired
     private UtilisateurRepository utilisateurRepository;
 
+    @Autowired
+    private UtilisateurService utilisateurService;
+
     public List<Restaurant> getAllRestaurants() {
         return restaurantRepository.findAll();
     }
@@ -27,10 +31,14 @@ public class RestaurantService {
     public Optional<Restaurant> getRestaurantById(Long id) {
         return restaurantRepository.findById(id);
     }
+    
+    public Optional<Restaurant> getRestaurantByEmail(String email) {
+        return restaurantRepository.findByUtilisateurEmail(email);
+    }
 
     @Transactional
     public Restaurant createRestaurant(Restaurant restaurant) {
-        Utilisateur savedUtilisateur = utilisateurRepository.save(restaurant.getUtilisateur());
+        Utilisateur savedUtilisateur = utilisateurService.createUtilisateur(restaurant.getUtilisateur());
         restaurant.setUtilisateur(savedUtilisateur);
         return restaurantRepository.save(restaurant);
     }
@@ -38,17 +46,17 @@ public class RestaurantService {
     @Transactional
     public Optional<Restaurant> updateRestaurant(Long id, Restaurant restaurantDetails) {
         return restaurantRepository.findById(id).map(restaurant -> {
-            utilisateurRepository.save(restaurantDetails.getUtilisateur());
+            utilisateurService.updateUtilisateur(restaurantDetails.getUtilisateur(), Role.RESTAURANT);
             restaurant.setUtilisateur(restaurantDetails.getUtilisateur());
             restaurant.setNom(restaurantDetails.getNom());
             restaurant.setDescription(restaurantDetails.getDescription());
             restaurant.setTelephone(restaurantDetails.getTelephone());
-            restaurant.setAdresse(restaurantDetails.getAdresse());
-            restaurant.setVille(restaurantDetails.getVille());
-            restaurant.setLatitude(restaurantDetails.getLatitude());
-            restaurant.setLongitude(restaurantDetails.getLongitude());
-            restaurant.setOuvert(restaurantDetails.isOuvert());
-            restaurant.setNoteMoyenne(restaurantDetails.getNoteMoyenne());
+            // restaurant.setAdresse(restaurantDetails.getAdresse());
+            // restaurant.setVille(restaurantDetails.getVille());
+            // restaurant.setLatitude(restaurantDetails.getLatitude());
+            // restaurant.setLongitude(restaurantDetails.getLongitude());
+            // restaurant.setOuvert(restaurantDetails.isOuvert());
+            // restaurant.setNoteMoyenne(restaurantDetails.getNoteMoyenne());
             return restaurantRepository.save(restaurant);
         });
     }

@@ -33,3 +33,6 @@ build/
 .vscode/
 
 .fake
+
+**.lock.db
+**.trace.db
