@@ -41,9 +41,13 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/h2-console/**",
                                 "/api/utilisateurs/logout",
+                                "/api/utilisateurs/register-admin",
                                 "/api/utilisateurs/login",
                                 "/api/clients",
-                                "/api/restaurants/**")
+                                "/api/restaurants/**",
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html")
                         .permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthFilter,

@@ -1,5 +1,7 @@
 package itu.m2.ws.controllers;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,6 +29,8 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/restaurants")
+@Tag(name = "RESTAURANT", description = "Endpoints de gestion des restaurants")
+@SecurityRequirement(name = "bearerAuth")
 public class RestaurantController extends BaseController {
 
     @Autowired

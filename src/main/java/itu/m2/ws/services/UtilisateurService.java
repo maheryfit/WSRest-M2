@@ -12,7 +12,6 @@ import org.jspecify.annotations.NullMarked;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -94,11 +93,11 @@ public class UtilisateurService implements UserDetailsService {
         }
 
         if (!utilisateur.isActif()) {
-            throw new DisabledException("Ce compte est désactivé");
+            throw new BadCredentialsException("Email introuvable : " + email);
         }
 
         if (!bCryptPasswordEncoder.matches(motDePasse, utilisateur.getMotDePasseHash())) {
-            throw new BadCredentialsException("Le mot de passe ne correspond pas pour : " + email);
+            throw new BadCredentialsException("Email introuvable : " + email);
         }
 
         return utilisateur;
@@ -127,9 +126,7 @@ public class UtilisateurService implements UserDetailsService {
                 .stream(roleStrRaw.split(","))
                 .filter(s -> !s.isEmpty())
                 .map(String::trim)
-                .map(roleStr -> {
-                    return new SimpleGrantedAuthority(roleStr);
-                })
+                .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
         return new UsernamePasswordAuthenticationToken(userDetails, "", authorities);
     }

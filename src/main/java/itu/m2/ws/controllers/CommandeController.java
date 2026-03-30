@@ -1,12 +1,14 @@
 package itu.m2.ws.controllers;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import itu.m2.ws.dto.CommandeDto;
+import itu.m2.ws.dto.LigneCommandeDto;
 import itu.m2.ws.models.Commande;
+import itu.m2.ws.models.LigneCommande;
 import itu.m2.ws.models.StatutCommande;
 import itu.m2.ws.services.ClientService;
 import itu.m2.ws.services.CommandeService;
-import itu.m2.ws.services.LivraisonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -22,6 +24,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RestController
 @RequestMapping("/api/commandes")
 @Tag(name = "CLIENT", description = "Endpoints réservés aux clients")
+@SecurityRequirement(name = "bearerAuth")
 public class CommandeController extends BaseController {
 
     @Autowired
@@ -30,11 +33,8 @@ public class CommandeController extends BaseController {
     @Autowired
     private ClientService clientService;
 
-    @Autowired
-    private LivraisonService livraisonService;
-
     @GetMapping
-    @PreAuthorize("hasRole('CLIENT')")
+    @PreAuthorize("hasAnyRole('CLIENT')")
     public ResponseEntity<List<CommandeDto>> getMyCommandes() {
         String email = getCurrentUserEmail();
         return clientService.getClientByEmail(email)
@@ -70,14 +70,6 @@ public class CommandeController extends BaseController {
         // client
         dto.add(linkTo(methodOn(ClientController.class).getClientById(commande.getClient().getId())).withRel("client"));
 
-        // livreur (if exists)
-        livraisonService.getLivraisonByCommandeId(commande.getId()).ifPresent(livraison -> {
-            if (livraison.getLivreur() != null) {
-                dto.add(linkTo(methodOn(LivreurController.class).getLivreurById(livraison.getLivreur().getId()))
-                        .withRel("livreur"));
-            }
-        });
-
         // next-actions based on status
         String status = commande.getStatutCommande().getLibelle();
         if ("CREER".equals(status)) {
@@ -93,14 +85,14 @@ public class CommandeController extends BaseController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('CLIENT')")
+    @PreAuthorize("hasAnyRole('CLIENT')")
     public CommandeDto createCommande(@Valid @RequestBody CommandeDto commandeDto) {
         Commande commande = CommandeDto.convertToEntity(commandeDto);
         return addHateoasLinks(commandeService.createCommande(commande));
     }
 
     @PostMapping("/{id}/annuler")
-    @PreAuthorize("hasRole('CLIENT')")
+    @PreAuthorize("hasAnyRole('CLIENT')")
     public ResponseEntity<CommandeDto> annulerCommande(@PathVariable Long id) {
         StatutCommande statutAnnuler = new StatutCommande();
         statutAnnuler.setId(1L);
@@ -121,8 +113,28 @@ public class CommandeController extends BaseController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Void> deleteCommande(@PathVariable Long id) {
         return commandeService.deleteCommande(id) ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
+    }
+
+    @PostMapping("/{id}/lignes")
+    @PreAuthorize("hasAnyRole('CLIENT')")
+    public ResponseEntity<CommandeDto> ajouterLigne(@PathVariable Long id,
+            @Valid @RequestBody LigneCommandeDto ligneDto) {
+        LigneCommande ligne = LigneCommandeDto.convertToEntity(ligneDto);
+        return commandeService.ajouterLigneCommande(id, ligne)
+                .map(this::addHateoasLinks)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping("/{id}/lignes/{ligneId}")
+    @PreAuthorize("hasAnyRole('CLIENT', 'ADMIN')")
+    public ResponseEntity<CommandeDto> supprimerLigne(@PathVariable Long id, @PathVariable Long ligneId) {
+        return commandeService.supprimerLigneCommande(id, ligneId)
+                .map(this::addHateoasLinks)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 }

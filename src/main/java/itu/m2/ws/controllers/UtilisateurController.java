@@ -1,8 +1,10 @@
 package itu.m2.ws.controllers;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import itu.m2.ws.dto.LoginRequestDto;
 import itu.m2.ws.dto.UtilisateurDto;
+import itu.m2.ws.enums.Role;
 import itu.m2.ws.models.Utilisateur;
 import itu.m2.ws.services.UtilisateurService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/utilisateurs")
 @Tag(name = "ADMIN", description = "Endpoints réservés à l'administration (gestion utilisateurs, statuts)")
+@SecurityRequirement(name = "bearerAuth")
 public class UtilisateurController {
 
     @Autowired
@@ -32,7 +35,6 @@ public class UtilisateurController {
             String token = utilisateurService.generateToken(utilisateur.getEmail());
             return ResponseEntity.ok(token);
         } catch (Exception e) {
-            // Afficher l'erreur réelle pour faciliter le débuggage temporairement
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
         }
     }
@@ -44,10 +46,34 @@ public class UtilisateurController {
         return ResponseEntity.status(HttpStatus.OK).body("Logout successfully");
     }
 
+    /**
+     * Endpoint PUBLIC (sans @PreAuthorize) pour créer un administrateur.
+     * Utile pour le bootstrap initial de la base de données : aucun token requis.
+     * Le rôle ADMIN est forcé indépendamment du corps de la requête.
+     * Exemple : POST /api/utilisateurs/register-admin
+     * { "email": "admin@gmail.com", "motDePasse": "password" }
+     */
+    @PostMapping("/register-admin")
+    @Tag(name = "AUTH", description = "Création d'un admin sans authentification (bootstrap/seed)")
+    public ResponseEntity<?> registerAdmin(@RequestBody LoginRequestDto registerRequest) {
+        try {
+            Utilisateur admin = new Utilisateur();
+            admin.setEmail(registerRequest.getEmail());
+            admin.setMotDePasseHash(registerRequest.getMotDePasse()); // encodé par createUtilisateur()
+            admin.setRole(Role.ADMIN);
+            admin.setActif(true);
+            Utilisateur created = utilisateurService.createUtilisateur(admin);
+            return ResponseEntity.status(HttpStatus.CREATED).body(UtilisateurDto.convertToDto(created));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erreur : " + e.getMessage());
+        }
+    }
+
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN')")
     public List<UtilisateurDto> getAllUtilisateurs() {
-        return utilisateurService.getAllUtilisateurs().stream().map(UtilisateurDto::convertToDto).collect(Collectors.toList());
+        return utilisateurService.getAllUtilisateurs().stream().map(UtilisateurDto::convertToDto)
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
@@ -66,7 +92,8 @@ public class UtilisateurController {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity<UtilisateurDto> updateUtilisateur(@PathVariable Long id, @Valid @RequestBody UtilisateurDto utilisateurDto) {
+    public ResponseEntity<UtilisateurDto> updateUtilisateur(@PathVariable Long id,
+            @Valid @RequestBody UtilisateurDto utilisateurDto) {
         Utilisateur utilisateur = UtilisateurDto.convertToEntity(utilisateurDto);
         return utilisateurService.updateUtilisateur(id, utilisateur)
                 .map(updatedUtilisateur -> ResponseEntity.ok(UtilisateurDto.convertToDto(updatedUtilisateur)))
@@ -76,6 +103,7 @@ public class UtilisateurController {
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Void> deleteUtilisateur(@PathVariable Long id) {
-        return utilisateurService.deleteUtilisateur(id) ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
+        return utilisateurService.deleteUtilisateur(id) ? ResponseEntity.ok().build()
+                : ResponseEntity.notFound().build();
     }
 }

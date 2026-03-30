@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import itu.m2.ws.models.AvisRestaurant;
-import itu.m2.ws.models.Restaurant;
 import itu.m2.ws.repositories.AvisRestaurantRepository;
 import itu.m2.ws.repositories.RestaurantRepository;
 
@@ -48,7 +47,7 @@ public class AvisRestaurantService {
             avisRestaurant.setNote(avisRestaurantDetails.getNote());
             avisRestaurant.setCommentaire(avisRestaurantDetails.getCommentaire());
             avisRestaurant.setDateCreation(avisRestaurantDetails.getDateCreation());
-            
+
             AvisRestaurant updatedAvis = avisRestaurantRepository.save(avisRestaurant);
             updateRestaurantNoteMoyenne(updatedAvis.getRestaurant().getId());
             return updatedAvis;

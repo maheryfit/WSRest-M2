@@ -1,5 +1,7 @@
 package itu.m2.ws.controllers;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
 import itu.m2.ws.dto.AdresseDto;
 import itu.m2.ws.dto.ClientDto;
 import itu.m2.ws.models.Adresse;
@@ -19,6 +21,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/clients")
+@SecurityRequirement(name = "bearerAuth")
 public class ClientController extends BaseController {
 
     @Autowired

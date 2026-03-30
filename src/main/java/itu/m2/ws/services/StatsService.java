@@ -1,7 +1,6 @@
 package itu.m2.ws.services;
 
 import itu.m2.ws.repositories.CommandeRepository;
-import itu.m2.ws.repositories.LivraisonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,9 +16,6 @@ public class StatsService {
     @Autowired
     private CommandeRepository commandeRepository;
 
-    @Autowired
-    private LivraisonRepository livraisonRepository;
-
     public List<Map<String, Object>> getTopRestaurants(String fromStr, String toStr) {
         Timestamp from = (fromStr != null && !fromStr.isEmpty())
                 ? Timestamp.valueOf(LocalDate.parse(fromStr).atStartOfDay())
@@ -32,10 +28,6 @@ public class StatsService {
 
     public List<Map<String, Object>> getMeilleursClients() {
         return commandeRepository.findMeilleursClients();
-    }
-
-    public List<Map<String, Object>> getLivreursPerformance() {
-        return livraisonRepository.findLivreursPerformance();
     }
 
     public List<Map<String, Object>> getCommandesParJour() {

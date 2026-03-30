@@ -1,5 +1,7 @@
 package itu.m2.ws.controllers;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
 import itu.m2.ws.dto.PaiementDto;
 import itu.m2.ws.models.Paiement;
 import itu.m2.ws.services.PaiementService;
@@ -14,6 +16,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
+@SecurityRequirement(name = "bearerAuth")
 public class PaiementController {
 
     @Autowired
@@ -27,24 +30,27 @@ public class PaiementController {
         return paiementService.getAllPaiements().stream().map(PaiementDto::convertToDto).collect(Collectors.toList());
     }
 
-    @GetMapping("/commandes/{commandeId}/paiement")
-    public ResponseEntity<PaiementDto> getPaiementByCommandeId(@PathVariable Long commandeId) {
-        return this.paiementService.getPaiementByCommandeId(commandeId)
-                .map(paiement -> ResponseEntity.ok(PaiementDto.convertToDto(paiement)))
-                .orElse(ResponseEntity.notFound().build());
+    @GetMapping("/commandes/{commandeId}/paiements")
+    public ResponseEntity<List<PaiementDto>> getPaiementsByCommandeId(@PathVariable Long commandeId) {
+        List<PaiementDto> paiements = this.paiementService.getPaiementsByCommandeId(commandeId)
+                .stream().map(PaiementDto::convertToDto).collect(Collectors.toList());
+        return ResponseEntity.ok(paiements);
     }
 
     @PostMapping("/commandes/{commandeId}/paiement")
-    public ResponseEntity<PaiementDto> initierPaiement(@PathVariable Long commandeId,
+    public ResponseEntity<?> initierPaiement(@PathVariable Long commandeId,
             @RequestBody PaiementDto paiementDto) {
         paiementDto.setCommandeId(commandeId);
-        // Default to first status (e.g., PENDING/INITIE) if not specified
         if (paiementDto.getStatutPaiementId() == null) {
             statutPaiementService.getStatutPaiementByLibelle("INITIALISE")
                     .ifPresent(s -> paiementDto.setStatutPaiementId(s.getId()));
         }
-        Paiement paiement = PaiementDto.convertToEntity(paiementDto);
-        return ResponseEntity.ok(PaiementDto.convertToDto(paiementService.createPaiement(paiement)));
+        try {
+            Paiement paiement = PaiementDto.convertToEntity(paiementDto);
+            return ResponseEntity.ok(PaiementDto.convertToDto(paiementService.createPaiement(paiement)));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @PostMapping("/paiements/{id}/confirmer")
@@ -69,9 +75,13 @@ public class PaiementController {
     }
 
     @PostMapping("/paiements")
-    public PaiementDto createPaiement(@Valid @RequestBody PaiementDto paiementDto) {
-        Paiement paiement = PaiementDto.convertToEntity(paiementDto);
-        return PaiementDto.convertToDto(paiementService.createPaiement(paiement));
+    public ResponseEntity<?> createPaiement(@Valid @RequestBody PaiementDto paiementDto) {
+        try {
+            Paiement paiement = PaiementDto.convertToEntity(paiementDto);
+            return ResponseEntity.ok(PaiementDto.convertToDto(paiementService.createPaiement(paiement)));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @PutMapping("/paiements/{id}")

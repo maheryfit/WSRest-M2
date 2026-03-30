@@ -19,13 +19,13 @@ public class HistoriqueCommande {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "commande_id", nullable = false)
     private Commande commande;
     @Column(nullable = false)
     private Timestamp dateStatus;
-    @ManyToOne
     @JoinColumn(name = "statut_commande_id", nullable = false)
+    @ManyToOne
     private StatutCommande statutCommande;
 
     @PrePersist

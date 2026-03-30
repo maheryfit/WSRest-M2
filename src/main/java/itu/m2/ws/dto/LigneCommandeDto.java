@@ -24,8 +24,7 @@ public class LigneCommandeDto {
     @Positive(message = "La quantité doit être un nombre positif")
     private int quantite;
 
-    @Positive(message = "Le prix unitaire doit être un nombre positif")
-    private double prixUnitaire;
+    private Double prixUnitaire;
 
     public static LigneCommandeDto convertToDto(LigneCommande ligneCommande) {
         return new LigneCommandeDto(
@@ -33,14 +32,17 @@ public class LigneCommandeDto {
                 ligneCommande.getCommande().getId(),
                 ligneCommande.getPlat().getId(),
                 ligneCommande.getQuantite(),
-                ligneCommande.getPrixUnitaire()
-        );
+                ligneCommande.getPrixUnitaire());
     }
 
     public static LigneCommande convertToEntity(LigneCommandeDto ligneCommandeDto) {
         LigneCommande ligneCommande = new LigneCommande();
         ligneCommande.setQuantite(ligneCommandeDto.getQuantite());
-        ligneCommande.setPrixUnitaire(ligneCommandeDto.getPrixUnitaire());
+        if (ligneCommandeDto.getPrixUnitaire() != null) {
+            ligneCommande.setPrixUnitaire(ligneCommandeDto.getPrixUnitaire());
+        } else {
+            ligneCommande.setPrixUnitaire(0.0);
+        }
 
         Commande commande = new Commande();
         commande.setId(ligneCommandeDto.getCommandeId());

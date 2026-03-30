@@ -1,0 +1,2416 @@
+{
+  "info": {
+    "_postman_id": "bac25036-04d6-4a08-b41d-337650536e8d",
+    "name": "WSRest-M2 — MASTER COLLECTION",
+    "description": "Collection complète. Mot de passe = 'password' pour tous les utilisateurs.\n\nOrdre recommandé :\n0-BOOTSTRAP → insère admin, clients, restaurants\n1-AUTH → récupère les tokens\n2..8 → utilisation normale de l'API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "31321620"
+  },
+  "item": [
+    {
+      "name": "0 ─ CRÉATION & ACTIONS (TOUS LES POST)",
+      "item": [
+        {
+          "name": "0.1 ─ INITIALISATION SYSTÈME",
+          "item": [
+            {
+              "name": "Créer Clients (10 du dump.sql)",
+              "item": [
+                {
+                  "name": "Client 1 — Marie RANDRIA",
+                  "request": {
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"email\": \"client1@gmail.com\",\n  \"motDePasse\": \"password\",\n  \"nom\": \"RANDRIA\",\n  \"prenom\": \"Marie\",\n  \"telephone\": \"0324455566\"\n}"
+                    },
+                    "url": {
+                      "raw": "{{base_url}}/api/clients",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "api",
+                        "clients"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Client 2 — Jean RAKOTO",
+                  "request": {
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"email\": \"client2@gmail.com\",\n  \"motDePasse\": \"password\",\n  \"nom\": \"RAKOTO\",\n  \"prenom\": \"Jean\",\n  \"telephone\": \"0344455566\"\n}"
+                    },
+                    "url": {
+                      "raw": "{{base_url}}/api/clients",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "api",
+                        "clients"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Client 3 — Rija RAKOTO",
+                  "request": {
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"email\": \"client3@gmail.com\",\n  \"motDePasse\": \"password\",\n  \"nom\": \"RAKOTO\",\n  \"prenom\": \"Rija\",\n  \"telephone\": \"0374455566\"\n}"
+                    },
+                    "url": {
+                      "raw": "{{base_url}}/api/clients",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "api",
+                        "clients"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Client 4 — Rija RANDRIAMIHAJA",
+                  "request": {
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"email\": \"client4@gmail.com\",\n  \"motDePasse\": \"password\",\n  \"nom\": \"RANDRIAMIHAJA\",\n  \"prenom\": \"Rija\",\n  \"telephone\": \"0384455566\"\n}"
+                    },
+                    "url": {
+                      "raw": "{{base_url}}/api/clients",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "api",
+                        "clients"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Client 5 — Joso RAKOTONIRINA",
+                  "request": {
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"email\": \"client5@gmail.com\",\n  \"motDePasse\": \"password\",\n  \"nom\": \"RAKOTONIRINA\",\n  \"prenom\": \"Joso\",\n  \"telephone\": \"0334455566\"\n}"
+                    },
+                    "url": {
+                      "raw": "{{base_url}}/api/clients",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "api",
+                        "clients"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Client 6 — Jean Rakoto (.mg)",
+                  "request": {
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"email\": \"rakoto.jean@gmail.mg\",\n  \"motDePasse\": \"password\",\n  \"nom\": \"Rakoto\",\n  \"prenom\": \"Jean\",\n  \"telephone\": \"+261341234001\"\n}"
+                    },
+                    "url": {
+                      "raw": "{{base_url}}/api/clients",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "api",
+                        "clients"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Client 7 — Marie Rasoa (.mg)",
+                  "request": {
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"email\": \"rasoa.marie@gmail.mg\",\n  \"motDePasse\": \"password\",\n  \"nom\": \"Rasoa\",\n  \"prenom\": \"Marie\",\n  \"telephone\": \"+261341234002\"\n}"
+                    },
+                    "url": {
+                      "raw": "{{base_url}}/api/clients",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "api",
+                        "clients"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Client 8 — Zo Rasoamampionona",
+                  "request": {
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"email\": \"zo.rasoamampionona@gmail.mg\",\n  \"motDePasse\": \"password\",\n  \"nom\": \"Rasoamampionona\",\n  \"prenom\": \"Zo\",\n  \"telephone\": \"+261341234003\"\n}"
+                    },
+                    "url": {
+                      "raw": "{{base_url}}/api/clients",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "api",
+                        "clients"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Client 9 — Haingo Andriantsoa",
+                  "request": {
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"email\": \"haingo.andriantsoa@gmail.mg\",\n  \"motDePasse\": \"password\",\n  \"nom\": \"Andriantsoa\",\n  \"prenom\": \"Haingo\",\n  \"telephone\": \"+261341234004\"\n}"
+                    },
+                    "url": {
+                      "raw": "{{base_url}}/api/clients",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "api",
+                        "clients"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Client 10 — Fidy Rakotondrabe",
+                  "request": {
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"email\": \"fidy.rakotondrabe@gmail.mg\",\n  \"motDePasse\": \"password\",\n  \"nom\": \"Rakotondrabe\",\n  \"prenom\": \"Fidy\",\n  \"telephone\": \"+261341234005\"\n}"
+                    },
+                    "url": {
+                      "raw": "{{base_url}}/api/clients",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "api",
+                        "clients"
+                      ]
+                    }
+                  },
+                  "response": []
+                }
+              ]
+            },
+            {
+              "name": "Créer Admin (admin@gmail.com)",
+              "request": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"admin@gmail.com\",\n  \"motDePasse\": \"password\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/utilisateurs/register-admin",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "utilisateurs",
+                    "register-admin"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "LOGIN ADMIN (pour capture token_admin)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "var t = pm.response.text();",
+                      "pm.collectionVariables.set('token_admin', t);",
+                      "pm.collectionVariables.set('jwt_token', t);"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"admin@gmail.com\",\n  \"motDePasse\": \"password\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/utilisateurs/login",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "utilisateurs",
+                    "login"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "0.2 ─ RESTAURANTS & MENUS",
+          "item": [
+            {
+              "name": "Créer Restaurants (7 du dump.sql)",
+              "item": [
+                {
+                  "name": "Resto 1 — La Varangue",
+                  "request": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      },
+                      {
+                        "key": "Authorization",
+                        "value": "Bearer {{token_admin}}"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"email\": \"contact@lavarangue.mg\",\n  \"motDePasse\": \"password\",\n  \"nom\": \"La Varangue\",\n  \"description\": \"Restaurant gastronomique réputé pour sa cuisine raffinée.\",\n  \"telephone\": \"+261202227397\",\n  \"adresse\": \"17 Rue Printsy Ratsimamanga, Isoraka\",\n  \"ville\": \"Antananarivo\",\n  \"latitude\": -18.910052, \"longitude\": 47.521873, \"ouvert\": true\n}"
+                    },
+                    "url": {
+                      "raw": "{{base_url}}/api/restaurants",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "api",
+                        "restaurants"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Resto 2 — Le Sakamanga",
+                  "request": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      },
+                      {
+                        "key": "Authorization",
+                        "value": "Bearer {{token_admin}}"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"email\": \"contact@sakamanga.mg\",\n  \"motDePasse\": \"password\",\n  \"nom\": \"Le Sakamanga\",\n  \"description\": \"Cuisine malagasy et européenne dans une ambiance chaleureuse.\",\n  \"telephone\": \"+261202235809\",\n  \"adresse\": \"Rue Ratianarivo, Ampasamadinika\",\n  \"ville\": \"Antananarivo\",\n  \"latitude\": -18.911, \"longitude\": 47.525, \"ouvert\": true\n}"
+                    },
+                    "url": {
+                      "raw": "{{base_url}}/api/restaurants",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "api",
+                        "restaurants"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Resto 3 — Kudeta Urban Club",
+                  "request": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      },
+                      {
+                        "key": "Authorization",
+                        "value": "Bearer {{token_admin}}"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"email\": \"reservation@kudeta.mg\",\n  \"motDePasse\": \"password\",\n  \"nom\": \"Kudeta Urban Club\",\n  \"description\": \"Restaurant lounge chic situé au Carlton.\",\n  \"telephone\": \"+261344040404\",\n  \"adresse\": \"Rue Pierre Stibbe, Anosy\",\n  \"ville\": \"Antananarivo\",\n  \"latitude\": -18.9152, \"longitude\": 47.5218, \"ouvert\": true\n}"
+                    },
+                    "url": {
+                      "raw": "{{base_url}}/api/restaurants",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "api",
+                        "restaurants"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Resto 4 — Café de la Gare",
+                  "request": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      },
+                      {
+                        "key": "Authorization",
+                        "value": "Bearer {{token_admin}}"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"email\": \"infos@cafedelagare.mg\",\n  \"motDePasse\": \"password\",\n  \"nom\": \"Café de la Gare\",\n  \"description\": \"Cadre élégant dans la gare de Soarano.\",\n  \"telephone\": \"+261340743333\",\n  \"adresse\": \"Gare Soarano, Avenue de l'Indépendance\",\n  \"ville\": \"Antananarivo\",\n  \"latitude\": -18.9026, \"longitude\": 47.5226, \"ouvert\": true\n}"
+                    },
+                    "url": {
+                      "raw": "{{base_url}}/api/restaurants",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "api",
+                        "restaurants"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Resto 5 — Le Petit Poucet",
+                  "request": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      },
+                      {
+                        "key": "Authorization",
+                        "value": "Bearer {{token_admin}}"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"email\": \"contact@lepetitpoucet.mg\",\n  \"motDePasse\": \"password\",\n  \"nom\": \"Le Petit Poucet\",\n  \"description\": \"Grillades, pizzas et ambiance conviviale.\",\n  \"telephone\": \"+261341122233\",\n  \"adresse\": \"Antaninarenina\",\n  \"ville\": \"Antananarivo\",\n  \"latitude\": -18.9105, \"longitude\": 47.5245, \"ouvert\": true\n}"
+                    },
+                    "url": {
+                      "raw": "{{base_url}}/api/restaurants",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "api",
+                        "restaurants"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Resto 6 — Kudeta Ivandry",
+                  "request": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      },
+                      {
+                        "key": "Authorization",
+                        "value": "Bearer {{token_admin}}"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"email\": \"contact@kudeta.mg\",\n  \"motDePasse\": \"password\",\n  \"nom\": \"Kudeta\",\n  \"description\": \"Restaurant fusion à Ivandry.\",\n  \"telephone\": \"+261202224001\",\n  \"adresse\": \"Lot IVN 42, Ivandry\",\n  \"ville\": \"Antananarivo\",\n  \"latitude\": -18.8821, \"longitude\": 47.5361, \"ouvert\": true\n}"
+                    },
+                    "url": {
+                      "raw": "{{base_url}}/api/restaurants",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "api",
+                        "restaurants"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Resto 7 — Sakamanga Haute-Ville",
+                  "request": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      },
+                      {
+                        "key": "Authorization",
+                        "value": "Bearer {{token_admin}}"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"email\": \"info@sakamanga.mg\",\n  \"motDePasse\": \"password\",\n  \"nom\": \"Sakamanga\",\n  \"description\": \"Restaurant historique de la Haute-Ville.\",\n  \"telephone\": \"+261202224002\",\n  \"adresse\": \"Rue d'Anjouanina, Haute-Ville\",\n  \"ville\": \"Antananarivo\",\n  \"latitude\": -18.9109, \"longitude\": 47.5353, \"ouvert\": true\n}"
+                    },
+                    "url": {
+                      "raw": "{{base_url}}/api/restaurants",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "api",
+                        "restaurants"
+                      ]
+                    }
+                  },
+                  "response": []
+                }
+              ]
+            },
+            {
+              "name": "Logins Restaurants (Capture Tokens)",
+              "item": [
+                {
+                  "name": "Login Resto 1",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                          "pm.collectionVariables.set('token_resto1', pm.response.text());"
+                        ]
+                      }
+                    }
+                  ],
+                  "request": {
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\"email\": \"contact@lavarangue.mg\", \"motDePasse\": \"password\"}"
+                    },
+                    "url": {
+                      "raw": "{{base_url}}/api/utilisateurs/login",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "api",
+                        "utilisateurs",
+                        "login"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Login Resto 2",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                          "pm.collectionVariables.set('token_resto2', pm.response.text());"
+                        ]
+                      }
+                    }
+                  ],
+                  "request": {
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\"email\": \"contact@sakamanga.mg\", \"motDePasse\": \"password\"}"
+                    },
+                    "url": {
+                      "raw": "{{base_url}}/api/utilisateurs/login",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "api",
+                        "utilisateurs",
+                        "login"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Login Resto 3",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                          "pm.collectionVariables.set('token_resto3', pm.response.text());"
+                        ]
+                      }
+                    }
+                  ],
+                  "request": {
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\"email\": \"reservation@kudeta.mg\", \"motDePasse\": \"password\"}"
+                    },
+                    "url": {
+                      "raw": "{{base_url}}/api/utilisateurs/login",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "api",
+                        "utilisateurs",
+                        "login"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Login Resto 4",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                          "pm.collectionVariables.set('token_resto4', pm.response.text());"
+                        ]
+                      }
+                    }
+                  ],
+                  "request": {
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\"email\": \"infos@cafedelagare.mg\", \"motDePasse\": \"password\"}"
+                    },
+                    "url": {
+                      "raw": "{{base_url}}/api/utilisateurs/login",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "api",
+                        "utilisateurs",
+                        "login"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Login Resto 5",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                          "pm.collectionVariables.set('token_resto5', pm.response.text());"
+                        ]
+                      }
+                    }
+                  ],
+                  "request": {
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\"email\": \"contact@lepetitpoucet.mg\", \"motDePasse\": \"password\"}"
+                    },
+                    "url": {
+                      "raw": "{{base_url}}/api/utilisateurs/login",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "api",
+                        "utilisateurs",
+                        "login"
+                      ]
+                    }
+                  },
+                  "response": []
+                }
+              ]
+            },
+            {
+              "name": "Créer TOUS LES PLATS (du dump / master)",
+              "item": [
+                {
+                  "name": "Resto 1 — La Varangue",
+                  "item": [
+                    {
+                      "name": "Magret de Canard au Miel de Baobab",
+                      "request": {
+                        "method": "POST",
+                        "header": [
+                          {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                          },
+                          {
+                            "key": "Authorization",
+                            "value": "Bearer {{token_resto1}}"
+                          }
+                        ],
+                        "body": {
+                          "mode": "raw",
+                          "raw": "{\r\n    \"nom\": \"Magret de Canard au Miel de Baobab\",\r\n    \"description\": \"Magret poêlé, miel de Baobab et purée de patates douces.\",\r\n    \"prix\": 45000,\r\n    \"restaurantId\": 1,\r\n    \"categorie\": \"Plat Principal\",\r\n    \"disponible\": true\r\n}"
+                        },
+                        "url": {
+                          "raw": "{{base_url}}/api/restaurants/1/plats",
+                          "host": [
+                            "{{base_url}}"
+                          ],
+                          "path": [
+                            "api",
+                            "restaurants",
+                            "1",
+                            "plats"
+                          ]
+                        }
+                      },
+                      "response": []
+                    },
+                    {
+                      "name": "Foie Gras Maison",
+                      "request": {
+                        "method": "POST",
+                        "header": [
+                          {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                          },
+                          {
+                            "key": "Authorization",
+                            "value": "Bearer {{token_resto1}}"
+                          }
+                        ],
+                        "body": {
+                          "mode": "raw",
+                          "raw": "{\r\n    \"nom\": \"Foie Gras Maison\",\r\n    \"description\": \"Foie gras de canard maison, chutney de figues.\",\r\n    \"prix\": 35000,\r\n    \"restaurantId\": 1,\r\n    \"categorie\": \"Entrée\",\r\n    \"disponible\": true\r\n}"
+                        },
+                        "url": {
+                          "raw": "{{base_url}}/api/restaurants/1/plats",
+                          "host": [
+                            "{{base_url}}"
+                          ],
+                          "path": [
+                            "api",
+                            "restaurants",
+                            "1",
+                            "plats"
+                          ]
+                        }
+                      },
+                      "response": []
+                    },
+                    {
+                      "name": "Moelleux au Chocolat",
+                      "request": {
+                        "method": "POST",
+                        "header": [
+                          {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                          },
+                          {
+                            "key": "Authorization",
+                            "value": "Bearer {{token_resto1}}"
+                          }
+                        ],
+                        "body": {
+                          "mode": "raw",
+                          "raw": "{\r\n    \"nom\": \"Moelleux au Chocolat de Madagascar\",\r\n    \"description\": \"Cœur coulant, glace vanille.\",\r\n    \"prix\": 15000,\r\n    \"restaurantId\": 1,\r\n    \"categorie\": \"Dessert\",\r\n    \"disponible\": true\r\n}"
+                        },
+                        "url": {
+                          "raw": "{{base_url}}/api/restaurants/1/plats",
+                          "host": [
+                            "{{base_url}}"
+                          ],
+                          "path": [
+                            "api",
+                            "restaurants",
+                            "1",
+                            "plats"
+                          ]
+                        }
+                      },
+                      "response": []
+                    },
+                    {
+                      "name": "Carpaccio de Zébu",
+                      "request": {
+                        "method": "POST",
+                        "header": [
+                          {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                          },
+                          {
+                            "key": "Authorization",
+                            "value": "Bearer {{token_resto1}}"
+                          }
+                        ],
+                        "body": {
+                          "mode": "raw",
+                          "raw": "{\r\n    \"nom\": \"Carpaccio de Zébu\",\r\n    \"description\": \"Fines tranches marinées, basilic et parmesan.\",\r\n    \"prix\": 25000,\r\n    \"restaurantId\": 1,\r\n    \"categorie\": \"Entrée\",\r\n    \"disponible\": true\r\n}"
+                        },
+                        "url": {
+                          "raw": "{{base_url}}/api/restaurants/1/plats",
+                          "host": [
+                            "{{base_url}}"
+                          ],
+                          "path": [
+                            "api",
+                            "restaurants",
+                            "1",
+                            "plats"
+                          ]
+                        }
+                      },
+                      "response": []
+                    }
+                  ]
+                },
+                {
+                  "name": "Resto 2 — Le Sakamanga",
+                  "item": [
+                    {
+                      "name": "Romazava Royal",
+                      "request": {
+                        "method": "POST",
+                        "header": [
+                          {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                          },
+                          {
+                            "key": "Authorization",
+                            "value": "Bearer {{token_resto2}}"
+                          }
+                        ],
+                        "body": {
+                          "mode": "raw",
+                          "raw": "{\r\n    \"nom\": \"Romazava Royal\",\r\n    \"description\": \"Plat national malagasy par excellence.\",\r\n    \"prix\": 30000,\r\n    \"restaurantId\": 2,\r\n    \"categorie\": \"Plat Principal\",\r\n    \"disponible\": true\r\n}"
+                        },
+                        "url": {
+                          "raw": "{{base_url}}/api/restaurants/2/plats",
+                          "host": [
+                            "{{base_url}}"
+                          ],
+                          "path": [
+                            "api",
+                            "restaurants",
+                            "2",
+                            "plats"
+                          ]
+                        }
+                      },
+                      "response": []
+                    },
+                    {
+                      "name": "Ravitoto Sy Henakisoa",
+                      "request": {
+                        "method": "POST",
+                        "header": [
+                          {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                          },
+                          {
+                            "key": "Authorization",
+                            "value": "Bearer {{token_resto2}}"
+                          }
+                        ],
+                        "body": {
+                          "mode": "raw",
+                          "raw": "{\r\n    \"nom\": \"Ravitoto Sy Henakisoa\",\r\n    \"description\": \"Feuilles de manioc pilées avec porc.\",\r\n    \"prix\": 25000,\r\n    \"restaurantId\": 2,\r\n    \"categorie\": \"Plat Principal\",\r\n    \"disponible\": true\r\n}"
+                        },
+                        "url": {
+                          "raw": "{{base_url}}/api/restaurants/2/plats",
+                          "host": [
+                            "{{base_url}}"
+                          ],
+                          "path": [
+                            "api",
+                            "restaurants",
+                            "2",
+                            "plats"
+                          ]
+                        }
+                      },
+                      "response": []
+                    },
+                    {
+                      "name": "Pavé de Zébu Poivre Vert",
+                      "request": {
+                        "method": "POST",
+                        "header": [
+                          {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                          },
+                          {
+                            "key": "Authorization",
+                            "value": "Bearer {{token_resto2}}"
+                          }
+                        ],
+                        "body": {
+                          "mode": "raw",
+                          "raw": "{\r\n    \"nom\": \"Pavé de Zébu sauce Poivre Vert\",\r\n    \"description\": \"Sauce au poivre vert frais de Madagascar.\",\r\n    \"prix\": 32000,\r\n    \"restaurantId\": 2,\r\n    \"categorie\": \"Plat Principal\",\r\n    \"disponible\": true\r\n}"
+                        },
+                        "url": {
+                          "raw": "{{base_url}}/api/restaurants/2/plats",
+                          "host": [
+                            "{{base_url}}"
+                          ],
+                          "path": [
+                            "api",
+                            "restaurants",
+                            "2",
+                            "plats"
+                          ]
+                        }
+                      },
+                      "response": []
+                    },
+                    {
+                      "name": "Salade Sakamanga",
+                      "request": {
+                        "method": "POST",
+                        "header": [
+                          {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                          },
+                          {
+                            "key": "Authorization",
+                            "value": "Bearer {{token_resto2}}"
+                          }
+                        ],
+                        "body": {
+                          "mode": "raw",
+                          "raw": "{\r\n    \"nom\": \"Salade Sakamanga\",\r\n    \"description\": \"Achard de légumes et camarons grillés.\",\r\n    \"prix\": 20000,\r\n    \"restaurantId\": 2,\r\n    \"categorie\": \"Entrée\",\r\n    \"disponible\": true\r\n}"
+                        },
+                        "url": {
+                          "raw": "{{base_url}}/api/restaurants/2/plats",
+                          "host": [
+                            "{{base_url}}"
+                          ],
+                          "path": [
+                            "api",
+                            "restaurants",
+                            "2",
+                            "plats"
+                          ]
+                        }
+                      },
+                      "response": []
+                    }
+                  ]
+                },
+                {
+                  "name": "Resto 3 — Kudeta Urban Club",
+                  "item": [
+                    {
+                      "name": "Tartare de Thon Rouge",
+                      "request": {
+                        "method": "POST",
+                        "header": [
+                          {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                          },
+                          {
+                            "key": "Authorization",
+                            "value": "Bearer {{token_resto3}}"
+                          }
+                        ],
+                        "body": {
+                          "mode": "raw",
+                          "raw": "{\r\n    \"nom\": \"Tartare de Thon Rouge\",\r\n    \"description\": \"Marinade au sésame, soja et gingembre.\",\r\n    \"prix\": 32000,\r\n    \"restaurantId\": 3,\r\n    \"categorie\": \"Entrée\",\r\n    \"disponible\": true\r\n}"
+                        },
+                        "url": {
+                          "raw": "{{base_url}}/api/restaurants/3/plats",
+                          "host": [
+                            "{{base_url}}"
+                          ],
+                          "path": [
+                            "api",
+                            "restaurants",
+                            "3",
+                            "plats"
+                          ]
+                        }
+                      },
+                      "response": []
+                    },
+                    {
+                      "name": "Filet de Mérou Coco",
+                      "request": {
+                        "method": "POST",
+                        "header": [
+                          {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                          },
+                          {
+                            "key": "Authorization",
+                            "value": "Bearer {{token_resto3}}"
+                          }
+                        ],
+                        "body": {
+                          "mode": "raw",
+                          "raw": "{\r\n    \"nom\": \"Filet de Mérou au Lait de Coco\",\r\n    \"description\": \"Lait de coco, curcuma et riz parfumé.\",\r\n    \"prix\": 40000,\r\n    \"restaurantId\": 3,\r\n    \"categorie\": \"Plat Principal\",\r\n    \"disponible\": true\r\n}"
+                        },
+                        "url": {
+                          "raw": "{{base_url}}/api/restaurants/3/plats",
+                          "host": [
+                            "{{base_url}}"
+                          ],
+                          "path": [
+                            "api",
+                            "restaurants",
+                            "3",
+                            "plats"
+                          ]
+                        }
+                      },
+                      "response": []
+                    },
+                    {
+                      "name": "Sushi Mixte",
+                      "request": {
+                        "method": "POST",
+                        "header": [
+                          {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                          },
+                          {
+                            "key": "Authorization",
+                            "value": "Bearer {{token_resto3}}"
+                          }
+                        ],
+                        "body": {
+                          "mode": "raw",
+                          "raw": "{\r\n    \"nom\": \"Sushi Mixte\",\r\n    \"description\": \"Assortiment avec pêche du jour locale.\",\r\n    \"prix\": 35000,\r\n    \"restaurantId\": 3,\r\n    \"categorie\": \"Apéritif\",\r\n    \"disponible\": true\r\n}"
+                        },
+                        "url": {
+                          "raw": "{{base_url}}/api/restaurants/3/plats",
+                          "host": [
+                            "{{base_url}}"
+                          ],
+                          "path": [
+                            "api",
+                            "restaurants",
+                            "3",
+                            "plats"
+                          ]
+                        }
+                      },
+                      "response": []
+                    },
+                    {
+                      "name": "Cheesecake Vanille",
+                      "request": {
+                        "method": "POST",
+                        "header": [
+                          {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                          },
+                          {
+                            "key": "Authorization",
+                            "value": "Bearer {{token_resto3}}"
+                          }
+                        ],
+                        "body": {
+                          "mode": "raw",
+                          "raw": "{\r\n    \"nom\": \"Cheesecake à la Vanille de Madagascar\",\r\n    \"description\": \"Parfumé à la vanille Bourbon.\",\r\n    \"prix\": 18000,\r\n    \"restaurantId\": 3,\r\n    \"categorie\": \"Dessert\",\r\n    \"disponible\": true\r\n}"
+                        },
+                        "url": {
+                          "raw": "{{base_url}}/api/restaurants/3/plats",
+                          "host": [
+                            "{{base_url}}"
+                          ],
+                          "path": [
+                            "api",
+                            "restaurants",
+                            "3",
+                            "plats"
+                          ]
+                        }
+                      },
+                      "response": []
+                    }
+                  ]
+                },
+                {
+                  "name": "Resto 4 — Café de la Gare",
+                  "item": [
+                    {
+                      "name": "Entrecôte Frites",
+                      "request": {
+                        "method": "POST",
+                        "header": [
+                          {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                          },
+                          {
+                            "key": "Authorization",
+                            "value": "Bearer {{token_resto4}}"
+                          }
+                        ],
+                        "body": {
+                          "mode": "raw",
+                          "raw": "{\r\n    \"nom\": \"Entrecôte Frites\",\r\n    \"description\": \"Classique entrecôte poêlée.\",\r\n    \"prix\": 38000,\r\n    \"restaurantId\": 4,\r\n    \"categorie\": \"Plat Principal\",\r\n    \"disponible\": true\r\n}"
+                        },
+                        "url": {
+                          "raw": "{{base_url}}/api/restaurants/4/plats",
+                          "host": [
+                            "{{base_url}}"
+                          ],
+                          "path": [
+                            "api",
+                            "restaurants",
+                            "4",
+                            "plats"
+                          ]
+                        }
+                      },
+                      "response": []
+                    },
+                    {
+                      "name": "Salade César",
+                      "request": {
+                        "method": "POST",
+                        "header": [
+                          {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                          },
+                          {
+                            "key": "Authorization",
+                            "value": "Bearer {{token_resto4}}"
+                          }
+                        ],
+                        "body": {
+                          "mode": "raw",
+                          "raw": "{\r\n    \"nom\": \"Salade César\",\r\n    \"description\": \"Poulet grillé, parmesan et croûtons.\",\r\n    \"prix\": 22000,\r\n    \"restaurantId\": 4,\r\n    \"categorie\": \"Entrée\",\r\n    \"disponible\": true\r\n}"
+                        },
+                        "url": {
+                          "raw": "{{base_url}}/api/restaurants/4/plats",
+                          "host": [
+                            "{{base_url}}"
+                          ],
+                          "path": [
+                            "api",
+                            "restaurants",
+                            "4",
+                            "plats"
+                          ]
+                        }
+                      },
+                      "response": []
+                    },
+                    {
+                      "name": "Burger de la Gare",
+                      "request": {
+                        "method": "POST",
+                        "header": [
+                          {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                          },
+                          {
+                            "key": "Authorization",
+                            "value": "Bearer {{token_resto4}}"
+                          }
+                        ],
+                        "body": {
+                          "mode": "raw",
+                          "raw": "{\r\n    \"nom\": \"Burger de la Gare\",\r\n    \"description\": \"Bœuf haché, sauce secrète spéciale.\",\r\n    \"prix\": 28000,\r\n    \"restaurantId\": 4,\r\n    \"categorie\": \"Plat Principal\",\r\n    \"disponible\": true\r\n}"
+                        },
+                        "url": {
+                          "raw": "{{base_url}}/api/restaurants/4/plats",
+                          "host": [
+                            "{{base_url}}"
+                          ],
+                          "path": [
+                            "api",
+                            "restaurants",
+                            "4",
+                            "plats"
+                          ]
+                        }
+                      },
+                      "response": []
+                    },
+                    {
+                      "name": "Crème Brûlée",
+                      "request": {
+                        "method": "POST",
+                        "header": [
+                          {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                          },
+                          {
+                            "key": "Authorization",
+                            "value": "Bearer {{token_resto4}}"
+                          }
+                        ],
+                        "body": {
+                          "mode": "raw",
+                          "raw": "{\r\n    \"nom\": \"Crème Brûlée\",\r\n    \"description\": \"Croûte caramélisée et vanille.\",\r\n    \"prix\": 12000,\r\n    \"restaurantId\": 4,\r\n    \"categorie\": \"Dessert\",\r\n    \"disponible\": true\r\n}"
+                        },
+                        "url": {
+                          "raw": "{{base_url}}/api/restaurants/4/plats",
+                          "host": [
+                            "{{base_url}}"
+                          ],
+                          "path": [
+                            "api",
+                            "restaurants",
+                            "4",
+                            "plats"
+                          ]
+                        }
+                      },
+                      "response": []
+                    }
+                  ]
+                },
+                {
+                  "name": "Resto 5 — Le Petit Poucet",
+                  "item": [
+                    {
+                      "name": "Tsaky Tsaky Mixte",
+                      "request": {
+                        "method": "POST",
+                        "header": [
+                          {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                          },
+                          {
+                            "key": "Authorization",
+                            "value": "Bearer {{token_resto5}}"
+                          }
+                        ],
+                        "body": {
+                          "mode": "raw",
+                          "raw": "{\r\n    \"nom\": \"Tsaky Tsaky Mixte\",\r\n    \"description\": \"Assortiment de nems et sambos.\",\r\n    \"prix\": 15000,\r\n    \"restaurantId\": 5,\r\n    \"categorie\": \"Entrée\",\r\n    \"disponible\": true\r\n}"
+                        },
+                        "url": {
+                          "raw": "{{base_url}}/api/restaurants/5/plats",
+                          "host": [
+                            "{{base_url}}"
+                          ],
+                          "path": [
+                            "api",
+                            "restaurants",
+                            "5",
+                            "plats"
+                          ]
+                        }
+                      },
+                      "response": []
+                    },
+                    {
+                      "name": "Brochettes de Zébu",
+                      "request": {
+                        "method": "POST",
+                        "header": [
+                          {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                          },
+                          {
+                            "key": "Authorization",
+                            "value": "Bearer {{token_resto5}}"
+                          }
+                        ],
+                        "body": {
+                          "mode": "raw",
+                          "raw": "{\r\n    \"nom\": \"Brochettes de Zébu au Charbon\",\r\n    \"description\": \"Grillées minute, achards.\",\r\n    \"prix\": 18000,\r\n    \"restaurantId\": 5,\r\n    \"categorie\": \"Plat Principal\",\r\n    \"disponible\": true\r\n}"
+                        },
+                        "url": {
+                          "raw": "{{base_url}}/api/restaurants/5/plats",
+                          "host": [
+                            "{{base_url}}"
+                          ],
+                          "path": [
+                            "api",
+                            "restaurants",
+                            "5",
+                            "plats"
+                          ]
+                        }
+                      },
+                      "response": []
+                    },
+                    {
+                      "name": "Pizza Poulet Champignon",
+                      "request": {
+                        "method": "POST",
+                        "header": [
+                          {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                          },
+                          {
+                            "key": "Authorization",
+                            "value": "Bearer {{token_resto5}}"
+                          }
+                        ],
+                        "body": {
+                          "mode": "raw",
+                          "raw": "{\r\n    \"nom\": \"Pizza Poulet Champignon\",\r\n    \"description\": \"Sauce tomate, fromage, poulet.\",\r\n    \"prix\": 25000,\r\n    \"restaurantId\": 5,\r\n    \"categorie\": \"Plat Principal\",\r\n    \"disponible\": true\r\n}"
+                        },
+                        "url": {
+                          "raw": "{{base_url}}/api/restaurants/5/plats",
+                          "host": [
+                            "{{base_url}}"
+                          ],
+                          "path": [
+                            "api",
+                            "restaurants",
+                            "5",
+                            "plats"
+                          ]
+                        }
+                      },
+                      "response": []
+                    },
+                    {
+                      "name": "Misao au Porc",
+                      "request": {
+                        "method": "POST",
+                        "header": [
+                          {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                          },
+                          {
+                            "key": "Authorization",
+                            "value": "Bearer {{token_resto5}}"
+                          }
+                        ],
+                        "body": {
+                          "mode": "raw",
+                          "raw": "{\r\n    \"nom\": \"Misao au Porc\",\r\n    \"description\": \"Nouilles aux œufs sautées.\",\r\n    \"prix\": 16000,\r\n    \"restaurantId\": 5,\r\n    \"categorie\": \"Plat Principal\",\r\n    \"disponible\": true\r\n}"
+                        },
+                        "url": {
+                          "raw": "{{base_url}}/api/restaurants/5/plats",
+                          "host": [
+                            "{{base_url}}"
+                          ],
+                          "path": [
+                            "api",
+                            "restaurants",
+                            "5",
+                            "plats"
+                          ]
+                        }
+                      },
+                      "response": []
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "0.3 ─ FLUX TRANSATIONS (POST)",
+          "item": [
+            {
+              "name": "Commandes Actions (Restaurant)",
+              "item": [
+                {
+                  "name": "Accepter (id={{commande_id}})",
+                  "request": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Authorization",
+                        "value": "Bearer {{token_resto1}}"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{base_url}}/api/restaurants/me/commandes/{{commande_id}}/accepter",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "api",
+                        "restaurants",
+                        "me",
+                        "commandes",
+                        "{{commande_id}}",
+                        "accepter"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "En Préparation",
+                  "request": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Authorization",
+                        "value": "Bearer {{token_resto1}}"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{base_url}}/api/restaurants/me/commandes/{{commande_id}}/en-preparation",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "api",
+                        "restaurants",
+                        "me",
+                        "commandes",
+                        "{{commande_id}}",
+                        "en-preparation"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Commande Prête",
+                  "request": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Authorization",
+                        "value": "Bearer {{token_resto1}}"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{base_url}}/api/restaurants/me/commandes/{{commande_id}}/pretee",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "api",
+                        "restaurants",
+                        "me",
+                        "commandes",
+                        "{{commande_id}}",
+                        "pretee"
+                      ]
+                    }
+                  },
+                  "response": []
+                }
+              ]
+            },
+            {
+              "name": "Créer Adresse — Client 1 (Analakely)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token_client1}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\"libelle\": \"Domicile\", \"rue\": \"Avenue de l'Indépendance\", \"ville\": \"Antananarivo\", \"codePostal\": \"101\", \"latitude\": -18.90378, \"longitude\": 47.52553, \"parDefaut\": true}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/clients/me/adresses",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "clients",
+                    "me",
+                    "adresses"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Créer Commande — Client 1 @ La Varangue",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "try{var r=pm.response.json();pm.collectionVariables.set('commande_id',r.id);}catch(e){}"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token_client1}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\"restaurantId\": 1, \"modePaiement\": \"CARTE\", \"lignesCommandes\": [{\"platId\": 1, \"quantite\": 2, \"prixUnitaire\": 45000}, {\"platId\": 3, \"quantite\": 1, \"prixUnitaire\": 15000}]}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/commandes",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "commandes"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Initier Paiement",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "try{var r=pm.response.json();pm.collectionVariables.set('paiement_id',r.id);}catch(e){}"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token_client1}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\"montant\": 105000, \"statutPaiementId\": 1}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/commandes/{{commande_id}}/paiement",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "commandes",
+                    "{{commande_id}}",
+                    "paiement"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Confirmer Paiement (id={{paiement_id}})",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token_admin}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/paiements/{{paiement_id}}/confirmer",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "paiements",
+                    "{{paiement_id}}",
+                    "confirmer"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Créer Avis — Client 1 @ Resto 1",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token_client1}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\"restaurantId\": 1, \"clientId\": 1, \"note\": 5, \"commentaire\": \"Excellent !\"}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/restaurants/1/avis",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "restaurants",
+                    "1",
+                    "avis"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "1 ─ AUTHENTIFICATION",
+      "item": [
+        {
+          "name": "Login Admin",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"email\": \"admin@gmail.com\", \"motDePasse\": \"password\"}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/utilisateurs/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "utilisateurs",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/utilisateurs/logout",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "utilisateurs",
+                "logout"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "2 ─ CONSULTATION (GET)",
+      "item": [
+        {
+          "name": "UTILISATEURS (ADMIN)",
+          "item": [
+            {
+              "name": "Lister tous",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token_admin}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/utilisateurs",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "utilisateurs"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Détails id=1",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token_admin}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/utilisateurs/1",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "utilisateurs",
+                    "1"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "CLIENTS & ADRESSES",
+          "item": [
+            {
+              "name": "Mon Profil (me)",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token_client1}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/clients/me",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "clients",
+                    "me"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Mes Adresses",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token_client1}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/clients/me/adresses",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "clients",
+                    "me",
+                    "adresses"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "RESTAURANTS",
+          "item": [
+            {
+              "name": "Tous les restaurants",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/restaurants",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "restaurants"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Restaurant id=1",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/restaurants/1",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "restaurants",
+                    "1"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "PLATS",
+          "item": [
+            {
+              "name": "Plats du Resto 1",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/restaurants/1/plats",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "restaurants",
+                    "1",
+                    "plats"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Détails plat (resto=1, plat=1)",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/restaurants/1/plats/1",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "restaurants",
+                    "1",
+                    "plats",
+                    "1"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "COMMANDES",
+          "item": [
+            {
+              "name": "Mes commandes (Client)",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token_client1}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/commandes",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "commandes"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Commandes (Restaurant)",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token_resto1}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/restaurants/me/commandes",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "restaurants",
+                    "me",
+                    "commandes"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "AVIS",
+          "item": [
+            {
+              "name": "Avis Resto 1",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/restaurants/1/avis",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "restaurants",
+                    "1",
+                    "avis"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "3 ─ MODIFICATION (PUT)",
+      "item": [
+        {
+          "name": "Mettre à jour profil client",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_client1}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"nom\": \"RANDRIA\", \"prenom\": \"Marie\", \"telephone\": \"0324455566\"}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/clients/me",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "clients",
+                "me"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Modifier Restaurant (Admin)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_admin}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"nom\": \"La Varangue\", \"description\": \"Mis à jour\", \"telephone\": \"+261202227397\", \"ouvert\": true}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/restaurants/1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "restaurants",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "4 ─ SUPPRESSION (DELETE)",
+      "item": [
+        {
+          "name": "Supprimer Adresse (id=1)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_client1}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/clients/me/adresses/1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "clients",
+                "me",
+                "adresses",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Supprimer Plat (id=99)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_resto1}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/restaurants/1/plats/99",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "restaurants",
+                "1",
+                "plats",
+                "99"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "5 ─ STATISTIQUES (ADMIN)",
+      "item": [
+        {
+          "name": "Top Restaurants",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_admin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/stats/restaurants/top",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "stats",
+                "restaurants",
+                "top"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Meilleurs Clients",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_admin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/stats/clients/meilleurs",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "stats",
+                "clients",
+                "meilleurs"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Commandes par Jour",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_admin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/stats/commandes/par-jour",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "stats",
+                "commandes",
+                "par-jour"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{jwt_token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8080"
+    },
+    {
+      "key": "jwt_token",
+      "value": ""
+    },
+    {
+      "key": "token_admin",
+      "value": ""
+    },
+    {
+      "key": "token_client1",
+      "value": ""
+    },
+    {
+      "key": "token_client2",
+      "value": ""
+    },
+    {
+      "key": "token_client3",
+      "value": ""
+    },
+    {
+      "key": "token_resto1",
+      "value": ""
+    },
+    {
+      "key": "token_resto2",
+      "value": ""
+    },
+    {
+      "key": "token_resto3",
+      "value": ""
+    },
+    {
+      "key": "token_resto4",
+      "value": ""
+    },
+    {
+      "key": "token_resto5",
+      "value": ""
+    },
+    {
+      "key": "token_resto6",
+      "value": ""
+    },
+    {
+      "key": "token_resto7",
+      "value": ""
+    },
+    {
+      "key": "commande_id",
+      "value": ""
+    },
+    {
+      "key": "paiement_id",
+      "value": ""
+    }
+  ]
+}

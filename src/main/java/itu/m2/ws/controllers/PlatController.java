@@ -1,5 +1,7 @@
 package itu.m2.ws.controllers;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import itu.m2.ws.dto.PlatDto;
 import itu.m2.ws.models.Plat;
 import itu.m2.ws.services.PlatService;
@@ -14,6 +16,8 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/restaurants/{restaurantId}/plats")
+@Tag(name = "PLATS", description = "Endpoints de gestion des menus (plats) par restaurant")
+@SecurityRequirement(name = "bearerAuth")
 public class PlatController {
 
     @Autowired
@@ -21,7 +25,8 @@ public class PlatController {
 
     @GetMapping
     public List<PlatDto> getAllPlats(@PathVariable Long restaurantId) {
-        return platService.getPlatsByRestaurantId(restaurantId).stream().map(PlatDto::convertToDto).collect(Collectors.toList());
+        return platService.getPlatsByRestaurantId(restaurantId).stream().map(PlatDto::convertToDto)
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
@@ -40,7 +45,8 @@ public class PlatController {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyRole('RESTAURANT')")
-    public ResponseEntity<PlatDto> updatePlat(@PathVariable Long restaurantId, @PathVariable Long id, @Valid @RequestBody PlatDto platDto) {
+    public ResponseEntity<PlatDto> updatePlat(@PathVariable Long restaurantId, @PathVariable Long id,
+            @Valid @RequestBody PlatDto platDto) {
         Plat plat = PlatDto.convertToEntity(platDto, restaurantId);
         return platService.getPlatByIdAndRestaurantId(id, restaurantId)
                 .flatMap(existingPlat -> platService.updatePlat(id, plat))

@@ -19,13 +19,13 @@ public class HistoriquePaiement {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "paiement_id", nullable = false)
     private Paiement paiement;
     @Column(nullable = false)
     private Timestamp dateStatus;
-    @ManyToOne
     @JoinColumn(name = "statut_paiement_id", nullable = false)
+    @ManyToOne
     private StatutPaiement statutPaiement;
 
     @PrePersist

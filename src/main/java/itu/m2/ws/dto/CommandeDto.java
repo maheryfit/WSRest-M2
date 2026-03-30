@@ -6,7 +6,6 @@ import itu.m2.ws.models.Commande;
 import itu.m2.ws.models.Restaurant;
 import itu.m2.ws.models.StatutCommande;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -14,6 +13,8 @@ import lombok.NoArgsConstructor;
 import org.springframework.hateoas.RepresentationModel;
 
 import java.sql.Timestamp;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 @NoArgsConstructor
@@ -22,20 +23,19 @@ import java.sql.Timestamp;
 public class CommandeDto extends RepresentationModel<CommandeDto> {
     private Long id;
 
-    @NotNull(message = "L'identifiant du client ne peut pas être nul")
     private Long clientId;
 
     @NotNull(message = "L'identifiant du restaurant ne peut pas être nul")
     private Long restaurantId;
 
-    @NotNull(message = "L'identifiant du statut de commande ne peut pas être nul")
-    private Long statutCommandeId;
+    private Long statutCommandeId = 1L;
 
-    @Positive(message = "Le montant total doit être un nombre positif")
     private Double montantTotal;
 
     @NotNull(message = "Le mode de paiement ne peut pas être nul")
     private ModePaiement modePaiement;
+
+    private List<LigneCommandeDto> lignesCommandes;
 
     private Timestamp dateCreation;
 
@@ -47,13 +47,20 @@ public class CommandeDto extends RepresentationModel<CommandeDto> {
                 commande.getStatutCommande().getId(),
                 commande.getMontantTotal(),
                 commande.getModePaiement(),
-                commande.getDateCreation()
-        );
+                commande.getLignesCommandes() != null
+                        ? commande.getLignesCommandes().stream().map(LigneCommandeDto::convertToDto)
+                                .collect(Collectors.toList())
+                        : null,
+                commande.getDateCreation());
     }
 
     public static Commande convertToEntity(CommandeDto commandeDto) {
         Commande commande = new Commande();
-        commande.setMontantTotal(commandeDto.getMontantTotal());
+        if (commandeDto.getMontantTotal() != null) {
+            commande.setMontantTotal(commandeDto.getMontantTotal());
+        } else {
+            commande.setMontantTotal(0.0);
+        }
         commande.setModePaiement(commandeDto.getModePaiement());
 
         Client client = new Client();
@@ -65,8 +72,15 @@ public class CommandeDto extends RepresentationModel<CommandeDto> {
         commande.setRestaurant(restaurant);
 
         StatutCommande statutCommande = new StatutCommande();
-        statutCommande.setId(commandeDto.getStatutCommandeId());
+        statutCommande.setId(commandeDto.getStatutCommandeId() != null ? commandeDto.getStatutCommandeId() : 1L);
         commande.setStatutCommande(statutCommande);
+
+        if (commandeDto.getLignesCommandes() != null) {
+            commande.setLignesCommandes(commandeDto.getLignesCommandes().stream()
+                    .map(LigneCommandeDto::convertToEntity)
+                    .collect(Collectors.toList()));
+            commande.getLignesCommandes().forEach(ligne -> ligne.setCommande(commande));
+        }
 
         return commande;
     }

@@ -1,6 +1,8 @@
 package itu.m2.ws.services;
 
 import itu.m2.ws.models.Paiement;
+import itu.m2.ws.models.Commande;
+import itu.m2.ws.models.StatutCommande;
 import itu.m2.ws.models.HistoriquePaiement;
 import itu.m2.ws.repositories.PaiementRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,9 @@ public class PaiementService {
     @Autowired
     private StatutPaiementService statutPaiementService;
 
+    @Autowired
+    private CommandeService commandeService;
+
     public List<Paiement> getAllPaiements() {
         return paiementRepository.findAll();
     }
@@ -30,17 +35,36 @@ public class PaiementService {
         return paiementRepository.findById(id);
     }
 
-    public Optional<Paiement> getPaiementByCommandeId(Long commandeId) {
+    public List<Paiement> getPaiementsByCommandeId(Long commandeId) {
         return paiementRepository.findByCommandeId(commandeId);
     }
 
     @Transactional
     public Paiement createPaiement(Paiement paiement) {
+        Long commandeId = paiement.getCommande().getId();
+        Commande commande = commandeService.getCommandeById(commandeId)
+                .orElseThrow(() -> new IllegalArgumentException("Commande non trouvée"));
+
+        double existingSum = paiementRepository.sumMontantByCommandeId(commandeId);
+        double newSum = existingSum + paiement.getMontant();
+
+        if (newSum > commande.getMontantTotal()) {
+            throw new IllegalArgumentException("Le montant cumulé des paiements (" + newSum
+                    + ") ne peut pas dépasser le montant total de la commande (" + commande.getMontantTotal() + ")");
+        }
+
         Paiement savedPaiement = paiementRepository.save(paiement);
         HistoriquePaiement historique = new HistoriquePaiement();
         historique.setPaiement(savedPaiement);
         historique.setStatutPaiement(savedPaiement.getStatutPaiement());
         historiquePaiementService.createHistoriquePaiement(historique);
+
+        if (Double.compare(newSum, commande.getMontantTotal()) == 0) {
+            StatutCommande statutPayee = new StatutCommande();
+            statutPayee.setId(6L);
+            commandeService.updateStatutCommande(commandeId, statutPayee);
+        }
+
         return savedPaiement;
     }
 
