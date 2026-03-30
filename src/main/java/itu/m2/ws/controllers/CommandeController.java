@@ -1,5 +1,6 @@
 package itu.m2.ws.controllers;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import itu.m2.ws.dto.CommandeDto;
 import itu.m2.ws.dto.LigneCommandeDto;
@@ -23,6 +24,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RestController
 @RequestMapping("/api/commandes")
 @Tag(name = "CLIENT", description = "Endpoints réservés aux clients")
+@SecurityRequirement(name = "bearerAuth")
 public class CommandeController extends BaseController {
 
     @Autowired

@@ -1,5 +1,7 @@
 package itu.m2.ws.controllers;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
 import itu.m2.ws.dto.PaiementDto;
 import itu.m2.ws.models.Paiement;
 import itu.m2.ws.services.PaiementService;
@@ -14,6 +16,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
+@SecurityRequirement(name = "bearerAuth")
 public class PaiementController {
 
     @Autowired
