@@ -1,21 +1,6 @@
 package itu.m2.ws.controllers;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
+import io.swagger.v3.oas.annotations.tags.Tag;
 import itu.m2.ws.dto.CommandeDto;
 import itu.m2.ws.dto.LivreurDto;
 import itu.m2.ws.enums.Role;
@@ -26,9 +11,18 @@ import itu.m2.ws.services.CommandeService;
 import itu.m2.ws.services.LivraisonService;
 import itu.m2.ws.services.LivreurService;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/livreurs")
+@Tag(name = "LIVREUR", description = "Endpoints réservés aux livreurs (gestion des livraisons, statut)")
 public class LivreurController extends BaseController {
 
     @Autowired
@@ -41,11 +35,13 @@ public class LivreurController extends BaseController {
     private LivraisonService livraisonService;
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public List<LivreurDto> getAllLivreurs() {
         return livreurService.getAllLivreurs().stream().map(LivreurDto::convertToDto).collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LIVREUR')")
     public ResponseEntity<LivreurDto> getLivreurById(@PathVariable Long id) {
         return livreurService.getLivreurById(id)
                 .map(livreur -> ResponseEntity.ok(LivreurDto.convertToDto(livreur)))
@@ -131,6 +127,7 @@ public class LivreurController extends BaseController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LIVREUR')")
     public ResponseEntity<LivreurDto> updateLivreur(@PathVariable Long id, @Valid @RequestBody LivreurDto livreurDto) {
         return livreurService.getLivreurById(id)
                 .map(existingLivreur -> {
@@ -149,9 +146,12 @@ public class LivreurController extends BaseController {
     
     @PatchMapping("/me/statut")
     @PreAuthorize("hasAnyRole('LIVREUR')")
-    public ResponseEntity<LivreurDto> updateMyStatus(@RequestBody String statutStr) {
+    public ResponseEntity<LivreurDto> updateMyStatus(@RequestBody Map<String, String> body) {
         String email = getCurrentUserEmail();
-        String statut = statutStr.replaceAll("^\"|\"$", "");
+        String statut = body.get("statut");
+        if (statut == null) {
+            return ResponseEntity.badRequest().build();
+        }
         return livreurService.getLivreurByEmail(email)
                 .flatMap(livreur -> livreurService.updateStatus(livreur.getId(), statut))
                 .map(updatedLivreur -> ResponseEntity.ok(LivreurDto.convertToDto(updatedLivreur)))
@@ -159,6 +159,7 @@ public class LivreurController extends BaseController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Void> deleteLivreur(@PathVariable Long id) {
         return livreurService.deleteLivreur(id) ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
     }

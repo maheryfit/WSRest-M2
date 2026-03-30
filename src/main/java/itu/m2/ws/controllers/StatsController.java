@@ -1,43 +1,46 @@
 package itu.m2.ws.controllers;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+import itu.m2.ws.services.StatsService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
-public class StatsController {
+@Tag(name = "ADMIN", description = "Endpoints réservés à l'administration")
+public class StatsController extends BaseController {
+
+    @Autowired
+    private StatsService statsService;
 
     @GetMapping("/stats/restaurants/top")
-    public ResponseEntity<List<Object>> getTopRestaurants(
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<Map<String, Object>>> getTopRestaurants(
             @RequestParam(required = false) String from,
             @RequestParam(required = false) String to) {
-        // Implement logic to return top restaurants
-        return ResponseEntity.ok(List.of());
+        return ResponseEntity.ok(statsService.getTopRestaurants(from, to));
     }
 
     @GetMapping("/stats/clients/meilleurs")
-    public ResponseEntity<List<Object>> getMeilleursClients() {
-        // Implement logic to return best clients
-        return ResponseEntity.ok(List.of());
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<Map<String, Object>>> getMeilleursClients() {
+        return ResponseEntity.ok(statsService.getMeilleursClients());
     }
 
     @GetMapping("/stats/livreurs/performance")
-    public ResponseEntity<List<Object>> getLivreursPerformance() {
-        // Implement logic to return livreur performance
-        return ResponseEntity.ok(List.of());
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<Map<String, Object>>> getLivreursPerformance() {
+        return ResponseEntity.ok(statsService.getLivreursPerformance());
     }
 
     @GetMapping("/stats/commandes/par-jour")
-    public ResponseEntity<List<Object>> getCommandesParJour() {
-        // Implement logic to return orders per day
-        return ResponseEntity.ok(List.of());
-    }
-
-    @GetMapping("/recommandations/restaurants")
-    public ResponseEntity<List<Object>> getRecommandationsRestaurants() {
-        // Implement logic to return recommendations
-        return ResponseEntity.ok(List.of());
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<Map<String, Object>>> getCommandesParJour() {
+        return ResponseEntity.ok(statsService.getCommandesParJour());
     }
 }

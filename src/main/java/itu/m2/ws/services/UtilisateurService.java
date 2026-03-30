@@ -11,6 +11,8 @@ import itu.m2.ws.repositories.UtilisateurRepository;
 import org.jspecify.annotations.NullMarked;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -58,11 +60,19 @@ public class UtilisateurService implements UserDetailsService {
     public Optional<Utilisateur> updateUtilisateur(Long id, Utilisateur utilisateurDetails) {
         return utilisateurRepository.findById(id).map(utilisateur -> {
             utilisateur.setEmail(utilisateurDetails.getEmail());
-            utilisateur.setMotDePasseHash(bCryptPasswordEncoder.encode(utilisateurDetails.getMotDePasseHash()));
+            if (utilisateurDetails.getMotDePasseHash() != null && !utilisateurDetails.getMotDePasseHash().isEmpty()) {
+                utilisateur.setMotDePasseHash(bCryptPasswordEncoder.encode(utilisateurDetails.getMotDePasseHash()));
+            }
             utilisateur.setRole(utilisateurDetails.getRole());
             utilisateur.setActif(utilisateurDetails.isActif());
             return utilisateurRepository.save(utilisateur);
         });
+    }
+
+    public void updateUtilisateur(Utilisateur utilisateur, Role role) {
+        utilisateur.setRole(role);
+        utilisateur.setMotDePasseHash(bCryptPasswordEncoder.encode(utilisateur.getMotDePasseHash()));
+        utilisateurRepository.save(utilisateur);
     }
 
     public boolean deleteUtilisateur(Long id) {
@@ -71,14 +81,26 @@ public class UtilisateurService implements UserDetailsService {
             return true;
         }).orElse(false);
     }
-    // SPRING SECURITY
+
+    /**
+     * Authentifie un utilisateur par email et mot de passe.
+     * Amélioré avec des exceptions spécifiques et vérification du statut actif.
+     */
     public Utilisateur logIn(String email, String motDePasse) {
-        Utilisateur utilisateur;
-        utilisateur = utilisateurRepository.findUtilisateurByEmail(email);
-        if (utilisateur == null)
-            throw new UsernameNotFoundException("Invalid email or password");
-        if (!isPasswordValid(motDePasse, utilisateur.getMotDePasseHash()))
-            throw new UsernameNotFoundException("Invalid email or password");
+        Utilisateur utilisateur = utilisateurRepository.findUtilisateurByEmail(email);
+
+        if (utilisateur == null) {
+            throw new BadCredentialsException("Email introuvable : " + email);
+        }
+
+        if (!utilisateur.isActif()) {
+            throw new DisabledException("Ce compte est désactivé");
+        }
+
+        if (!bCryptPasswordEncoder.matches(motDePasse, utilisateur.getMotDePasseHash())) {
+            throw new BadCredentialsException("Le mot de passe ne correspond pas pour : " + email);
+        }
+
         return utilisateur;
     }
 
@@ -94,12 +116,20 @@ public class UtilisateurService implements UserDetailsService {
         return new UtilisateurDetails(user, mapRolesToAuthorities(roles));
     }
 
-    public UsernamePasswordAuthenticationToken getAuthenticationToken(final String token, final UserDetails userDetails) {
+    public UsernamePasswordAuthenticationToken getAuthenticationToken(final String token,
+            final UserDetails userDetails) {
         Claims claims = extractAllClaims(token);
 
+        Object roleClaim = claims.get("role");
+        String roleStrRaw = roleClaim != null ? roleClaim.toString() : "";
+        System.out.print(roleStrRaw);
         final Collection<? extends GrantedAuthority> authorities = Arrays
-                .stream(claims.get("role").toString().split(","))
-                .map(SimpleGrantedAuthority::new)
+                .stream(roleStrRaw.split(","))
+                .filter(s -> !s.isEmpty())
+                .map(String::trim)
+                .map(roleStr -> {
+                    return new SimpleGrantedAuthority(roleStr);
+                })
                 .collect(Collectors.toList());
         return new UsernamePasswordAuthenticationToken(userDetails, "", authorities);
     }
@@ -133,9 +163,10 @@ public class UtilisateurService implements UserDetailsService {
         return Keys.hmacShaKeyFor(KEY.getBytes());
     }
 
-    public String generateToken(String email)  {
+    public String generateToken(String email) {
         return createToken(loadUserByUsername(email));
     }
+
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
@@ -144,19 +175,18 @@ public class UtilisateurService implements UserDetailsService {
     private Boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }
+
     public Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
     }
+
     public Boolean validateToken(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
+
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
-    }
-
-    private boolean isPasswordValid(String rawPassword, String encodedPassword) {
-        return bCryptPasswordEncoder.matches(rawPassword, encodedPassword);
     }
 
 }

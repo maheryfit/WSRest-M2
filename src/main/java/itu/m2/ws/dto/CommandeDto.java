@@ -9,14 +9,17 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.sql.Timestamp;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CommandeDto {
+@EqualsAndHashCode(callSuper = false)
+public class CommandeDto extends RepresentationModel<CommandeDto> {
     private Long id;
 
     @NotNull(message = "L'identifiant du client ne peut pas être nul")
@@ -29,7 +32,7 @@ public class CommandeDto {
     private Long statutCommandeId;
 
     @Positive(message = "Le montant total doit être un nombre positif")
-    private double montantTotal;
+    private Double montantTotal;
 
     @NotNull(message = "Le mode de paiement ne peut pas être nul")
     private ModePaiement modePaiement;

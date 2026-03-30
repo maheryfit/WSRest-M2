@@ -1,5 +1,6 @@
 package itu.m2.ws.controllers;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import itu.m2.ws.dto.LoginRequestDto;
 import itu.m2.ws.dto.UtilisateurDto;
 import itu.m2.ws.models.Utilisateur;
@@ -17,23 +18,27 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/utilisateurs")
+@Tag(name = "ADMIN", description = "Endpoints réservés à l'administration (gestion utilisateurs, statuts)")
 public class UtilisateurController {
 
     @Autowired
     private UtilisateurService utilisateurService;
 
     @PostMapping("/login")
+    @Tag(name = "AUTH", description = "Authentification")
     public ResponseEntity<String> login(@Valid @RequestBody LoginRequestDto loginRequest) {
         try {
             Utilisateur utilisateur = utilisateurService.logIn(loginRequest.getEmail(), loginRequest.getMotDePasse());
             String token = utilisateurService.generateToken(utilisateur.getEmail());
             return ResponseEntity.ok(token);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
+            // Afficher l'erreur réelle pour faciliter le débuggage temporairement
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
         }
     }
 
     @GetMapping("/logout")
+    @Tag(name = "AUTH")
     public ResponseEntity<String> logOut() {
         SecurityContextHolder.getContext().setAuthentication(null);
         return ResponseEntity.status(HttpStatus.OK).body("Logout successfully");

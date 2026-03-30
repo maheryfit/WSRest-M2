@@ -1,0 +1,289 @@
+﻿{
+    "info":  {
+                 "name":  "Food Delivery API - MBDS (Final)",
+                 "schema":  "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+             },
+    "item":  [
+                 {
+                     "name":  "0. AUTH (Scripts Auto)",
+                     "item":  [
+                                  {
+                                      "name":  "Login (RÃ©cupÃ¨re le Token)",
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "exec":  [
+                                                                                    "var jsonData;",
+                                                                                    "try {",
+                                                                                    "    jsonData = pm.response.json();",
+                                                                                    "} catch (e) {",
+                                                                                    "    console.log(\"Response is not JSON:\", pm.response.text());",
+                                                                                    "}",
+                                                                                    "",
+                                                                                    "if (jsonData \u0026\u0026 jsonData.token) {",
+                                                                                    "    pm.collectionVariables.set(\"jwt_token\", jsonData.token);",
+                                                                                    "    console.log(\"Token ADMIN sauvegardÃ© !\");",
+                                                                                    "}"
+                                                                                ],
+                                                                       "type":  "text/javascript"
+                                                                   }
+                                                    }
+                                                ],
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n    \"email\": \"client1@gmail.com\",\n    \"motDePasse\": \"password\"\n}",
+                                                                   "options":  {
+                                                                                   "json":  {
+                                                                                                "language":  "json"
+                                                                                            }
+                                                                               }
+                                                               },
+                                                      "url":  "{{base_url}}/api/utilisateurs/login"
+                                                  }
+                                  }
+                              ]
+                 },
+                 {
+                     "name":  "1. CLIENT (RAKOTO Jean)",
+                     "item":  [
+                                  {
+                                      "name":  "Mon Profil",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  "{{base_url}}/api/clients/me"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Mes Adresses",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  "{{base_url}}/api/clients/me/adresses"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Passer Commande (Burger Shop)",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "url":  "{{base_url}}/api/commandes",
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n    \"restaurantId\": 1,\n    \"modePaiement\": \"CARTE\",\n    \"items\": [{\"platId\": 1, \"quantite\": 2}]\n}",
+                                                                   "options":  {
+                                                                                   "json":  {
+                                                                                                "language":  "json"
+                                                                                            }
+                                                                               }
+                                                               }
+                                                  }
+                                  }
+                              ]
+                 },
+                 {
+                     "name":  "2. RESTAURANT (Burger Shop)",
+                     "item":  [
+                                  {
+                                      "name":  "Mes Commandes",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  "{{base_url}}/api/restaurants/me/commandes"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Accepter Commande 1",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "url":  "{{base_url}}/api/restaurants/me/commandes/1/accepter"
+                                                  }
+                                  }
+                              ]
+                 },
+                 {
+                     "name":  "3. LIVREUR (Paul)",
+                     "item":  [
+                                  {
+                                      "name":  "Mes Livraisons",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  "{{base_url}}/api/livreurs/me/commandes"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Update Statut DISPONIBLE",
+                                      "request":  {
+                                                      "method":  "PATCH",
+                                                      "url":  "{{base_url}}/api/livreurs/me/statut",
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\"statut\": \"DISPONIBLE\"}",
+                                                                   "options":  {
+                                                                                   "json":  {
+                                                                                                "language":  "json"
+                                                                                            }
+                                                                               }
+                                                               }
+                                                  }
+                                  }
+                              ]
+                 },
+                 {
+                     "name":  "4. ADMIN \u0026 STATS",
+                     "item":  [
+                                  {
+                                      "name":  "Top Restaurants",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  "{{base_url}}/api/stats/restaurants/top?from=2026-01-01"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Lister tous les Users",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  "{{base_url}}/api/users"
+                                                  }
+                                  }
+                              ]
+                 },
+                 {
+                     "name":  "5. ADMIN - CRÃ‰ATION RESTAURANTS",
+                     "item":  [
+                                  {
+                                      "name":  "CrÃ©er La Varangue",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "url":  "{{base_url}}/api/restaurants",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"email\": \"contact@lavarangue.mg\",\n  \"motDePasse\": \"password123\",\n  \"nom\": \"La Varangue\",\n  \"description\": \"Restaurant gastronomique rÃ©putÃ© pour sa cuisine raffinÃ©e et son cadre exceptionnel aux antiquitÃ©s.\",\n  \"telephone\": \"+261 20 22 273 97\",\n  \"adresse\": \"17 Rue Printsy Ratsimamanga, Isoraka\",\n  \"ville\": \"Antananarivo\",\n  \"latitude\": -18.910052,\n  \"longitude\": 47.521873,\n  \"ouvert\": true,\n  \"noteMoyenne\": 4.7\n}",
+                                                                   "options":  {
+                                                                                   "json":  {
+                                                                                                "language":  "json"
+                                                                                            }
+                                                                               }
+                                                               }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "CrÃ©er Le Sakamanga",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "url":  "{{base_url}}/api/restaurants",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"email\": \"contact@sakamanga.mg\",\n  \"motDePasse\": \"password123\",\n  \"nom\": \"Le Sakamanga\",\n  \"description\": \"Cuisine malagasy et europÃ©enne dans une ambiance chaleureuse, trÃ¨s au coeur de la ville.\",\n  \"telephone\": \"+261 20 22 358 09\",\n  \"adresse\": \"Rue Ratianarivo, Ampasamadinika\",\n  \"ville\": \"Antananarivo\",\n  \"latitude\": -18.9110,\n  \"longitude\": 47.5250,\n  \"ouvert\": true,\n  \"noteMoyenne\": 4.5\n}",
+                                                                   "options":  {
+                                                                                   "json":  {
+                                                                                                "language":  "json"
+                                                                                            }
+                                                                               }
+                                                               }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "CrÃ©er Kudeta Urban Club",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "url":  "{{base_url}}/api/restaurants",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"email\": \"reservation@kudeta.mg\",\n  \"motDePasse\": \"password123\",\n  \"nom\": \"Kudeta Urban Club\",\n  \"description\": \"Restaurant lounge chic situÃ© au Carlton, proposant une cuisine fusion savoureuse.\",\n  \"telephone\": \"+261 34 40 404 04\",\n  \"adresse\": \"Rue Pierre Stibbe, Anosy\",\n  \"ville\": \"Antananarivo\",\n  \"latitude\": -18.9152,\n  \"longitude\": 47.5218,\n  \"ouvert\": true,\n  \"noteMoyenne\": 4.6\n}",
+                                                                   "options":  {
+                                                                                   "json":  {
+                                                                                                "language":  "json"
+                                                                                            }
+                                                                               }
+                                                               }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "CrÃ©er CafÃ© de la Gare",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "url":  "{{base_url}}/api/restaurants",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"email\": \"infos@cafedelagare.mg\",\n  \"motDePasse\": \"password123\",\n  \"nom\": \"CafÃ© de la Gare\",\n  \"description\": \"Cadre Ã©lÃ©gant et historique proposant des plats inspirÃ©s de la brasserie parisienne au cÅ“ur de Soarano.\",\n  \"telephone\": \"+261 34 07 433 33\",\n  \"adresse\": \"Gare Soarano, Avenue de l\u0027IndÃ©pendance\",\n  \"ville\": \"Antananarivo\",\n  \"latitude\": -18.9026,\n  \"longitude\": 47.5226,\n  \"ouvert\": true,\n  \"noteMoyenne\": 4.3\n}",
+                                                                   "options":  {
+                                                                                   "json":  {
+                                                                                                "language":  "json"
+                                                                                            }
+                                                                               }
+                                                               }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "CrÃ©er Le Petit Poucet",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "url":  "{{base_url}}/api/restaurants",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"email\": \"contact@lepetitpoucet.mg\",\n  \"motDePasse\": \"password123\",\n  \"nom\": \"Le Petit Poucet\",\n  \"description\": \"IdÃ©al pour une sortie dÃ©contractÃ©e, reconnue pour ses grillades, ses pizzas et son ambiance conviviale.\",\n  \"telephone\": \"+261 34 11 222 33\",\n  \"adresse\": \"Antaninarenina\",\n  \"ville\": \"Antananarivo\",\n  \"latitude\": -18.9105,\n  \"longitude\": 47.5245,\n  \"ouvert\": true,\n  \"noteMoyenne\": 4.2\n}",
+                                                                   "options":  {
+                                                                                   "json":  {
+                                                                                                "language":  "json"
+                                                                                            }
+                                                                               }
+                                                               }
+                                                  }
+                                  }
+                              ]
+                 }
+             ],
+    "auth":  {
+                 "type":  "bearer",
+                 "bearer":  [
+                                {
+                                    "key":  "token",
+                                    "value":  "{{jwt_token}}",
+                                    "type":  "string"
+                                }
+                            ]
+             },
+    "variable":  [
+                     {
+                         "key":  "base_url",
+                         "value":  "http://localhost:8080"
+                     },
+                     {
+                         "key":  "jwt_token",
+                         "value":  ""
+                     }
+                 ]
+}

@@ -24,7 +24,7 @@ public class UtilisateurDetails implements UserDetails {
     }
 
     public static Collection<? extends GrantedAuthority> mapRolesToAuthorities(Set<Role> roles){
-        return roles.stream().map(role -> new SimpleGrantedAuthority(role.name())).collect(Collectors.toList());
+        return roles.stream().map(role -> new SimpleGrantedAuthority("ROLE_" + role.name())).collect(Collectors.toList());
     }
 
 
