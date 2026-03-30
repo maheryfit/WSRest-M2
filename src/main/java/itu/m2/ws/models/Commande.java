@@ -20,7 +20,6 @@ public class Commande {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Relations (assumant que Client, Restaurant, et StatutCommande existent)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "client_id", nullable = false)
     private Client client;
@@ -44,6 +43,7 @@ public class Commande {
     private Timestamp dateCreation;
 
     @OneToMany(mappedBy = "commande", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<LigneCommande> lignesCommandes = new ArrayList<>();
 
     public void calculerMontantTotal() {

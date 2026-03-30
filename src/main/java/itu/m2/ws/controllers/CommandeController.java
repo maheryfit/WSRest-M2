@@ -8,7 +8,6 @@ import itu.m2.ws.models.LigneCommande;
 import itu.m2.ws.models.StatutCommande;
 import itu.m2.ws.services.ClientService;
 import itu.m2.ws.services.CommandeService;
-import itu.m2.ws.services.LivraisonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -31,9 +30,6 @@ public class CommandeController extends BaseController {
 
     @Autowired
     private ClientService clientService;
-
-    @Autowired
-    private LivraisonService livraisonService;
 
     @GetMapping
     @PreAuthorize("hasAnyRole('CLIENT')")
@@ -71,14 +67,6 @@ public class CommandeController extends BaseController {
 
         // client
         dto.add(linkTo(methodOn(ClientController.class).getClientById(commande.getClient().getId())).withRel("client"));
-
-        // livreur (if exists)
-        livraisonService.getLivraisonByCommandeId(commande.getId()).ifPresent(livraison -> {
-            if (livraison.getLivreur() != null) {
-                dto.add(linkTo(methodOn(LivreurController.class).getLivreurById(livraison.getLivreur().getId()))
-                        .withRel("livreur"));
-            }
-        });
 
         // next-actions based on status
         String status = commande.getStatutCommande().getLibelle();

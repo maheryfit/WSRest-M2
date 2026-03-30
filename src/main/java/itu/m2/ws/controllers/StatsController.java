@@ -32,12 +32,6 @@ public class StatsController extends BaseController {
         return ResponseEntity.ok(statsService.getMeilleursClients());
     }
 
-    @GetMapping("/stats/livreurs/performance")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<Map<String, Object>>> getLivreursPerformance() {
-        return ResponseEntity.ok(statsService.getLivreursPerformance());
-    }
-
     @GetMapping("/stats/commandes/par-jour")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<Map<String, Object>>> getCommandesParJour() {
