@@ -2,7 +2,9 @@ package itu.m2.ws.controllers;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import itu.m2.ws.dto.CommandeDto;
+import itu.m2.ws.dto.LigneCommandeDto;
 import itu.m2.ws.models.Commande;
+import itu.m2.ws.models.LigneCommande;
 import itu.m2.ws.models.StatutCommande;
 import itu.m2.ws.services.ClientService;
 import itu.m2.ws.services.CommandeService;
@@ -34,7 +36,7 @@ public class CommandeController extends BaseController {
     private LivraisonService livraisonService;
 
     @GetMapping
-    @PreAuthorize("hasRole('CLIENT')")
+    @PreAuthorize("hasAnyRole('CLIENT')")
     public ResponseEntity<List<CommandeDto>> getMyCommandes() {
         String email = getCurrentUserEmail();
         return clientService.getClientByEmail(email)
@@ -93,14 +95,14 @@ public class CommandeController extends BaseController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('CLIENT')")
+    @PreAuthorize("hasAnyRole('CLIENT')")
     public CommandeDto createCommande(@Valid @RequestBody CommandeDto commandeDto) {
         Commande commande = CommandeDto.convertToEntity(commandeDto);
         return addHateoasLinks(commandeService.createCommande(commande));
     }
 
     @PostMapping("/{id}/annuler")
-    @PreAuthorize("hasRole('CLIENT')")
+    @PreAuthorize("hasAnyRole('CLIENT')")
     public ResponseEntity<CommandeDto> annulerCommande(@PathVariable Long id) {
         StatutCommande statutAnnuler = new StatutCommande();
         statutAnnuler.setId(1L);
@@ -121,8 +123,28 @@ public class CommandeController extends BaseController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Void> deleteCommande(@PathVariable Long id) {
         return commandeService.deleteCommande(id) ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
+    }
+
+    @PostMapping("/{id}/lignes")
+    @PreAuthorize("hasAnyRole('CLIENT')")
+    public ResponseEntity<CommandeDto> ajouterLigne(@PathVariable Long id,
+            @Valid @RequestBody LigneCommandeDto ligneDto) {
+        LigneCommande ligne = LigneCommandeDto.convertToEntity(ligneDto);
+        return commandeService.ajouterLigneCommande(id, ligne)
+                .map(this::addHateoasLinks)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping("/{id}/lignes/{ligneId}")
+    @PreAuthorize("hasAnyRole('CLIENT', 'ADMIN')")
+    public ResponseEntity<CommandeDto> supprimerLigne(@PathVariable Long id, @PathVariable Long ligneId) {
+        return commandeService.supprimerLigneCommande(id, ligneId)
+                .map(this::addHateoasLinks)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 }

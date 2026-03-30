@@ -5,10 +5,15 @@ import jakarta.persistence.*;
 import lombok.*;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "commandes")
-@Data @NoArgsConstructor @AllArgsConstructor @Builder
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Commande {
 
     @Id
@@ -37,6 +42,19 @@ public class Commande {
 
     @Column(name = "date_creation", updatable = false)
     private Timestamp dateCreation;
+
+    @OneToMany(mappedBy = "commande", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<LigneCommande> lignesCommandes = new ArrayList<>();
+
+    public void calculerMontantTotal() {
+        if (lignesCommandes != null) {
+            this.montantTotal = lignesCommandes.stream()
+                    .mapToDouble(ligne -> ligne.getQuantite() * ligne.getPrixUnitaire())
+                    .sum();
+        } else {
+            this.montantTotal = 0.0;
+        }
+    }
 
     @PrePersist
     protected void onCreate() {

@@ -7,7 +7,6 @@ import itu.m2.ws.enums.Role;
 import itu.m2.ws.models.StatutLivraison;
 import itu.m2.ws.models.Livreur;
 import itu.m2.ws.models.Utilisateur;
-import itu.m2.ws.services.CommandeService;
 import itu.m2.ws.services.LivraisonService;
 import itu.m2.ws.services.LivreurService;
 import jakarta.validation.Valid;
@@ -27,9 +26,6 @@ public class LivreurController extends BaseController {
 
     @Autowired
     private LivreurService livreurService;
-
-    @Autowired
-    private CommandeService commandeService;
 
     @Autowired
     private LivraisonService livraisonService;
@@ -143,7 +139,7 @@ public class LivreurController extends BaseController {
                 })
                 .orElse(ResponseEntity.notFound().build());
     }
-    
+
     @PatchMapping("/me/statut")
     @PreAuthorize("hasAnyRole('LIVREUR')")
     public ResponseEntity<LivreurDto> updateMyStatus(@RequestBody Map<String, String> body) {

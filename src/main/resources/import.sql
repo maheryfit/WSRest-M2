@@ -51,25 +51,20 @@ INSERT INTO livreurs (utilisateur_id, nom, prenom, telephone, statut) VALUES (6,
 INSERT INTO livreurs (utilisateur_id, nom, prenom, telephone, statut) VALUES (7, 'SOAVA', 'Lova', '0345566778', 'EN_LIVRAISON');
 
 -- Statuts Commande
-INSERT INTO statuts_commande (libelle, rang) VALUES ('ANNULER', 0);
-INSERT INTO statuts_commande (libelle, rang) VALUES ('CREER', 1);
-INSERT INTO statuts_commande (libelle, rang) VALUES ('ACCEPTEE_RESTAURANT', 2);
-INSERT INTO statuts_commande (libelle, rang) VALUES ('EN_PREPARATION', 3);
-INSERT INTO statuts_commande (libelle, rang) VALUES ('PRET', 4);
-INSERT INTO statuts_commande (libelle, rang) VALUES ('EN_LIVRAISON', 5);
-INSERT INTO statuts_commande (libelle, rang) VALUES ('LIVREE', 6);
+INSERT INTO statuts_commande (id, libelle, rang) VALUES (1, 'ANNULER', 0);
+INSERT INTO statuts_commande (id, libelle, rang) VALUES (2,'CREER', 1);
+INSERT INTO statuts_commande (id, libelle, rang) VALUES (3,'ACCEPTEE_RESTAURANT', 2);
+INSERT INTO statuts_commande (id, libelle, rang) VALUES (4,'EN_PREPARATION', 3);
+INSERT INTO statuts_commande (id, libelle, rang) VALUES (5,'PRET', 4);
+INSERT INTO statuts_commande (id, libelle, rang) VALUES (6,'PAYEE', 5);
 
 -- Statuts Paiement
-INSERT INTO statuts_paiement (libelle, rang) VALUES ('INITIALISE', 1);
-INSERT INTO statuts_paiement (libelle, rang) VALUES ('SUCCES', 2);
-INSERT INTO statuts_paiement (libelle, rang) VALUES ('ECHEC', 0);
+INSERT INTO statuts_paiement (id, libelle, rang) VALUES (1,'INITIALISE', 1);
+INSERT INTO statuts_paiement (id, libelle, rang) VALUES (2,'SUCCES', 2);
+INSERT INTO statuts_paiement (id, libelle, rang) VALUES (3,'ECHEC', 0);
 
 -- Statuts Livraison
-INSERT INTO statuts_livraison (libelle, rang) VALUES ('EN_ATTENTE', 1);
-INSERT INTO statuts_livraison (libelle, rang) VALUES ('ACCEPTEE_LIVREUR', 2);
-INSERT INTO statuts_livraison (libelle, rang) VALUES ('EN_COURS', 3);
-INSERT INTO statuts_livraison (libelle, rang) VALUES ('TERMINEE', 4);
-
--- Commandes initiales
-INSERT INTO commandes (client_id, restaurant_id, statut_commande_id, montant_total, mode_paiement, date_creation) VALUES (1, 1, 7, 33000.0, 'CARTE', '2026-03-27 12:00:00');
-INSERT INTO commandes (client_id, restaurant_id, statut_commande_id, montant_total, mode_paiement, date_creation) VALUES (2, 2, 7, 28000.0, 'CASH', '2026-03-28 14:00:00');
+INSERT INTO statuts_livraison (id, libelle, rang) VALUES (1,'EN_ATTENTE', 1);
+INSERT INTO statuts_livraison (id, libelle, rang) VALUES (2,'ACCEPTEE_LIVREUR', 2);
+INSERT INTO statuts_livraison (id, libelle, rang) VALUES (3,'EN_COURS', 3);
+INSERT INTO statuts_livraison (id, libelle, rang) VALUES (4,'TERMINEE', 4);

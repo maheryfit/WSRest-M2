@@ -46,8 +46,8 @@ public class CommandeControllerTest {
         statut.setId(1L);
         Timestamp now = Timestamp.from(Instant.now());
 
-        Commande commande1 = new Commande(1L, client, restaurant, statut, 50.0, ModePaiement.CARTE, now);
-        Commande commande2 = new Commande(2L, client, restaurant, statut, 75.0, ModePaiement.CASH, now);
+        Commande commande1 = new Commande(1L, client, restaurant, statut, 50.0, ModePaiement.CARTE, now, null);
+        Commande commande2 = new Commande(2L, client, restaurant, statut, 75.0, ModePaiement.CASH, now, null);
 
         when(commandeService.getAllCommandes()).thenReturn(Arrays.asList(commande1, commande2));
 
@@ -67,7 +67,7 @@ public class CommandeControllerTest {
         StatutCommande statut = new StatutCommande();
         statut.setId(1L);
         Timestamp now = Timestamp.from(Instant.now());
-        Commande commande = new Commande(1L, client, restaurant, statut, 50.0, ModePaiement.CARTE, now);
+        Commande commande = new Commande(1L, client, restaurant, statut, 50.0, ModePaiement.CARTE, now, null);
 
         when(commandeService.getCommandeById(1L)).thenReturn(Optional.of(commande));
 
@@ -86,8 +86,8 @@ public class CommandeControllerTest {
         StatutCommande statut = new StatutCommande();
         statut.setId(1L);
         Timestamp now = Timestamp.from(Instant.now());
-        Commande commande = new Commande(1L, client, restaurant, statut, 50.0, ModePaiement.CARTE, now);
-        CommandeDto commandeDto = new CommandeDto(null, 1L, 1L, 1L, 50.0, ModePaiement.CARTE, null);
+        Commande commande = new Commande(1L, client, restaurant, statut, 50.0, ModePaiement.CARTE, now, null);
+        CommandeDto commandeDto = new CommandeDto(null, 1L, 1L, 1L, 50.0, ModePaiement.CARTE, null, null);
 
         when(commandeService.createCommande(any(Commande.class))).thenReturn(commande);
 
@@ -107,8 +107,8 @@ public class CommandeControllerTest {
         StatutCommande statut = new StatutCommande();
         statut.setId(2L);
         Timestamp now = Timestamp.from(Instant.now());
-        Commande commande = new Commande(1L, client, restaurant, statut, 55.0, ModePaiement.CARTE, now);
-        CommandeDto commandeDto = new CommandeDto(1L, 1L, 1L, 2L, 55.0, ModePaiement.CARTE, now);
+        Commande commande = new Commande(1L, client, restaurant, statut, 55.0, ModePaiement.CARTE, now, null);
+        CommandeDto commandeDto = new CommandeDto(1L, 1L, 1L, 2L, 55.0, ModePaiement.CARTE, null, now);
 
         when(commandeService.updateCommande(any(Long.class), any(Commande.class))).thenReturn(Optional.of(commande));
 

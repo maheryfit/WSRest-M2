@@ -19,8 +19,8 @@ public class HistoriqueLivraison {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne
     @JoinColumn(name = "livraison_id", nullable = false)
+    @ManyToOne(cascade = CascadeType.REMOVE)
     private Livraison livraison;
     @Column(nullable = false)
     private Timestamp dateStatus;
